@@ -1,1 +1,29 @@
-두 번째 커밋
+//다이어트 어시스턴트 프로그램
+
+#include <iostream>
+using namespace std;
+
+int menu(void) {  //메뉴 5가지 중에 선택할 수 있도록 함. 키보드로 입력 받음
+
+}
+
+
+int _main(void) {
+	//프로그램 실행을 위한 입력 문자 저장
+	char start = ' ';
+	//choice는 어떤 메뉴를 선택했는지 번호 저장
+	int choice = 0;
+
+	cout << "다이어트 어시스턴트 프로그램을 실행하시겠습니까?" << endl;
+	cout << "실행하시겠다면 y(Y), 종료하시겠다면 x(X)를 입력해주세요 : ";
+	cin >> start;
+	if (start) {
+		return 0;
+	}
+
+	choice = menu();
+
+
+
+	return 0;
+}
