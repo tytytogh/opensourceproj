@@ -3,26 +3,75 @@
 #include <iostream>
 using namespace std;
 
-int menu(void) {  //메뉴 5가지 중에 선택할 수 있도록 함. 키보드로 입력 받음
+void menu(void) {  //메뉴 여러 가지 중에 선택할 수 있도록 함. 키보드로 입력받음
 
+	int input = 0;
+	bool CorE = true;
+
+	//메뉴는 계속 돌면서 사용자가 그만하기를 원한다면, 종료됨
+	while (CorE) {
+		//선택할 메뉴 출력
+		cout << "▶ 메뉴 " << endl;
+		cout << "\t1. 식단 짜기" << endl;
+		cout << "\t2. 먹은 음식 칼로리 계산" << endl;
+		cout << "\t3. 식단, 먹은 음식에 따른 운동 강도나 종류 추천" << endl;
+		cout << "\t4. 식단 짜기" << endl;
+		cout << "\t5. 프로그램 종료" << endl;
+
+		//기능 선택
+		cout << "원하시는 번호를 입력해 주세요 ▷ ";
+		cin >> input;
+
+		switch (input) {
+		case 1:
+			_1();
+			break;
+		case 2:
+			_2();
+			break;
+		case 3:
+			_3();
+			break;
+		case 4:
+			_4();
+			break;
+		case 5:
+			CorE = false;
+			break;
+		default:  //잘못된 입력-->다시 입력하도록 함.
+			cout << "메뉴에 없는 숫자(문자)입니다 다시 입력해 주세요." << endl;
+			break;
+		}
+	}
 }
 
 
 int _main(void) {
+	
+	//start 입력에 따라 x, y 이외의 문자가 들어오면, 다시 입력하도록 하기 위한 변수
+	bool flag = true;
+	
 	//프로그램 실행을 위한 입력 문자 저장
 	char start = ' ';
-	//choice는 어떤 메뉴를 선택했는지 번호 저장
-	int choice = 0;
 
 	cout << "다이어트 어시스턴트 프로그램을 실행하시겠습니까?" << endl;
 	cout << "실행하시겠다면 y(Y), 종료하시겠다면 x(X)를 입력해주세요 : ";
+
+while(flag){
 	cin >> start;
-	if (start) {
+        //프로그램 시작 결정 및 예외 처리
+             if(start=='x'||start=='X'){
 		return 0;
 	}
+	else if(start!=y||start!=Y){
+		flag = false;
+	}
+	else{
+		cout<<"y 또는 x 중에서 입력해주세요.(대문자 가능)"<<endl;
+	}
+}
 
-	choice = menu();
-
+	menu();
 
 
 	return 0;
