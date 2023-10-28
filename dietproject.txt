@@ -6,6 +6,77 @@
 
 using namespace std;
 
+int estimatedCal(int gender, int age) {
+	if (gender == 1) {
+		if (age >= 6 && age <= 8) {
+			return 1700;
+		}
+		else if (age >= 9 && age <= 11) {
+			return 2000;
+		}
+		else if (age >= 12 && age <= 14) {
+			return 2500;
+		}
+		else if (age >= 15 && age <= 18) {
+			return 2700;
+		}
+		else if (age >= 19 && age <= 29) {
+			return 2600;
+		}
+		else if (age >= 30 && age <= 49) {
+			return 2500;
+		}
+		else if (age >= 50 && age <= 64) {
+			return 2200;
+		}
+		else if (age >= 65 && age <= 74) {
+			return 2000;
+		}
+		else if (age >= 75) {
+			return 1900;
+		}
+		else {
+			//예외처리
+		}
+	}
+	else if (gender == 2) {
+		if (age >= 6 && age <= 8) {
+			return 1500;
+		}
+		else if (age >= 9 && age <= 11) {
+			return 1800;
+		}
+		else if (age >= 12 && age <= 14) {
+			return 2000;
+		}
+		else if (age >= 15 && age <= 18) {
+			return 2000;
+		}
+		else if (age >= 19 && age <= 29) {
+			return 2000;
+		}
+		else if (age >= 30 && age <= 49) {
+			return 1900;
+		}
+		else if (age >= 50 && age <= 64) {
+			return 1700;
+		}
+		else if (age >= 65 && age <= 74) {
+			return 1600;
+		}
+		else if (age >= 75) {
+			return 1500;
+		}
+		else {
+			//예외처리
+		}
+	}
+	else {
+		//예외처리
+	}
+
+}
+
 void RecoCal() {
 	//하루 칼로리 권장량 측정 또는 측정 결과 입력
 
@@ -15,17 +86,36 @@ void RecoCal() {
 	//칼로리 권장량 변수
 	int recoCal;
 
+	//칼로리 계산기 결과 저장할 변수
+	int Calcaculator;
+
 	cout << "하루 칼로리 권장량을 계산하시려면 1, 측정 결과를 입력하시려면 2를 입력해주세요" << endl;
 	cout << " ▷ 뒤로가기(숫자 0 입력)" << endl;
 	cin >> choice_in;
 
 	if (choice_in == 1) {
-		
+		//성별과 나이
+		int gender, age;
+
+		cout << "                  보건 복지부와 한국 영양학회에서 발행한" << endl;
+		cout << "                    \"2020 한국인 영양소 활용\"에 따른" << endl;
+		cout << "      2020 에너지 필요 추정량 계산에 필요한 성별과 나이를 입력하세요" << endl;
+		cout << "                    (남성은 1, 여성은 2를 입력해주세요)" << endl;
+		cout << "                      (나이는 6살 이상부터 입력 가능)" << endl;
+
+		cout << "성별 입력 ▷ ";
+		cin >> gender;
+		cout << "나이 입력 ▷ ";
+		cin >> age;
+
+		recoCal = estimatedCal(gender, age);
+		cout << recoCal << endl << endl;
 	}
 	else if (choice_in == 2) {
 
 	}
 	else if (choice_in == 0) {
+		//뒤로 가기
 		system("cls");
 	}
 	//예외처리
@@ -43,13 +133,13 @@ void dietplan() {  //식단 짜는 함수
 	//식단을 짤 일 수
 	int days;
 	//뒤로가기 구현위한 변수
-	
+
 	cout << " ▷ 식단을 짜려고 하는 일 수" << endl;
 	cout << " ▷ 뒤로가기(숫자 0 입력)" << endl;
 	cin >> days;
 
 	if (days >= 7 && days < 30) {
-		
+
 	}
 	else if (days >= 30) {
 
@@ -58,6 +148,7 @@ void dietplan() {  //식단 짜는 함수
 
 	}
 	else if (days == 0) {
+		//뒤로 가기
 		system("cls");
 	}
 	//예외처리
