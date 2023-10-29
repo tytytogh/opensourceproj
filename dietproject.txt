@@ -6,122 +6,143 @@
 
 using namespace std;
 
-int estimatedCal(int gender, int age) {
-	if (gender == 1) {
-		if (age >= 6 && age <= 8) {
-			return 1700;
-		}
-		else if (age >= 9 && age <= 11) {
-			return 2000;
-		}
-		else if (age >= 12 && age <= 14) {
-			return 2500;
-		}
-		else if (age >= 15 && age <= 18) {
-			return 2700;
-		}
-		else if (age >= 19 && age <= 29) {
-			return 2600;
-		}
-		else if (age >= 30 && age <= 49) {
-			return 2500;
-		}
-		else if (age >= 50 && age <= 64) {
-			return 2200;
-		}
-		else if (age >= 65 && age <= 74) {
-			return 2000;
-		}
-		else if (age >= 75) {
-			return 1900;
-		}
-		else {
-			//예외처리
-		}
+
+struct person {
+	//한 사람의 신체 정보
+
+	//성별
+	char gender;
+	//나이
+	int age;
+	//체중과 신장 저장할 변수
+	int weight, height;
+};
+
+double H_V(person p) {
+	//해리스 베네딕트 공식에 의한 하루 기초대사량 추정치 계산
+
+	//결과 저장
+	double result;
+
+	if (p.gender == 'm' || p.gender == 'M') { //남성일 때
+		result = (13.7516 * p.weight) + (5.0033 * p.height) - (6.7550 * p.age) + 66.4730;
 	}
-	else if (gender == 2) {
-		if (age >= 6 && age <= 8) {
-			return 1500;
-		}
-		else if (age >= 9 && age <= 11) {
-			return 1800;
-		}
-		else if (age >= 12 && age <= 14) {
-			return 2000;
-		}
-		else if (age >= 15 && age <= 18) {
-			return 2000;
-		}
-		else if (age >= 19 && age <= 29) {
-			return 2000;
-		}
-		else if (age >= 30 && age <= 49) {
-			return 1900;
-		}
-		else if (age >= 50 && age <= 64) {
-			return 1700;
-		}
-		else if (age >= 65 && age <= 74) {
-			return 1600;
-		}
-		else if (age >= 75) {
-			return 1500;
-		}
-		else {
-			//예외처리
-		}
+	else if (p.gender == 'w' || p.gender == 'W') { //여성일 때
+		result = (9.5634 * p.weight) + (1.8496 * p.height) - (4.6756 * p.age) + 655.0955;
 	}
 	else {
-		//예외처리
+		//예외
+		return 0;
 	}
 
+	return result;
 }
 
-void RecoCal() {
+double M_S(person p) {
+	//미플린 세인트 지어 공식에 의한 하루 기초대사량 추정치 계산
+
+	//결과 저장
+	double result;
+
+	if (p.gender == 'm' || p.gender == 'M') { //남성일 때
+		result = (13.397 * p.weight) + (4.799 * p.height) - (5.677 * p.age) + 88.362;
+	}
+	else if (p.gender == 'w' || p.gender == 'W') { //여성일 때
+		result = (9.247 * p.weight) + (3.098 * p.height) - (4.330 * p.age) + 447.593;
+	}
+	else {
+		//예외
+		return 0;
+	}
+
+	return result;
+}
+
+double RecoCal() {
+	person p;
+
+	//만약 choice_in과 fomula_choice에 예시와 다른 값이 들어왔을 때 while문 내부가 다시 동작하도록 함.
+	bool flag = true;
+
 	//하루 칼로리 권장량 측정 또는 측정 결과 입력
 
 	//권장량을 계산할지, 결과만 입력할지 선택할 변수
 	int choice_in;
-
-	//칼로리 권장량 변수
-	int recoCal;
-
 	//칼로리 계산기 결과 저장할 변수
-	int Calcaculator;
+	double Calcalculator;
+	//공식 선택 변수;
+	int fomula_choice;
 
-	cout << "하루 칼로리 권장량을 계산하시려면 1, 측정 결과를 입력하시려면 2를 입력해주세요" << endl;
-	cout << " ▷ 뒤로가기(숫자 0 입력)" << endl;
-	cin >> choice_in;
+	while (flag) {
+		//flag 변수가 예외때문에 continue로 가지 않고, 예외가 없이 잘 입력됐을 때 탈출
 
-	if (choice_in == 1) {
-		//성별과 나이
-		int gender, age;
+		cout << "하루 권장 칼로리 섭취량(kcal/day)을 계산하시려면 1, 측정 결과를 입력하시려면 2를 입력해주세요" << endl;
+		cout << " ▷ 뒤로가기(숫자 0 입력)" << endl;
+		cin >> choice_in;
 
-		cout << "                  보건 복지부와 한국 영양학회에서 발행한" << endl;
-		cout << "                    \"2020 한국인 영양소 활용\"에 따른" << endl;
-		cout << "      2020 에너지 필요 추정량 계산에 필요한 성별과 나이를 입력하세요" << endl;
-		cout << "                    (남성은 1, 여성은 2를 입력해주세요)" << endl;
-		cout << "                      (나이는 6살 이상부터 입력 가능)" << endl;
+		if (choice_in == 1) {
 
-		cout << "성별 입력 ▷ ";
-		cin >> gender;
-		cout << "나이 입력 ▷ ";
-		cin >> age;
+			cout << "하루 권장 칼로리 섭취량(kcal/day)을 구하기 위한 공식은 2가지가 있습니다" << endl << endl;
+			cout << "1. 해리스 베네딕트 공식" << endl;
+			cout << "2. 미플린 세인트 지어 공식" << endl;
+			cout << "원하는 공식을 입력해주세요 ▷ " << endl;
+			cin >> fomula_choice;
 
-		recoCal = estimatedCal(gender, age);
-		cout << recoCal << endl << endl;
+			//fomula_choice에 대한 예외 처리
+			if (fomula_choice != 1&& fomula_choice != 2) {
+				cout << "        ***공식 선택 오류***" << endl;
+				cout << "(반드시 1과 2 중에 하나를 입력해주세요)" << endl;
+				continue;
+			}
+
+			cout << " > 기본 정보 입력 < " << endl;
+			cout << "성별(남성은 m, 여성은 w) 입력 ▷ ";
+			cin >> p.gender;
+			cout << "나이(세) 입력 ▷ ";
+			cin >> p.age;
+			cout << "체중(kg) 입력 ▷ ";
+			cin >> p.weight;
+			cout << "신장(cm) 입력 ▷ ";
+			cin >> p.height;
+
+			if (fomula_choice == 1) {
+				Calcalculator = H_V(p);
+			}
+			else if (fomula_choice == 2) {
+				Calcalculator = M_S(p);
+			}
+			
+			if (Calcalculator == 0) {
+				//기본 정보 입력값에 대한 예외처리
+				cout << "                     ***기본 정보 입력 오류***" << endl;
+				cout << "(반드시 성별은 m과 w 중에 하나, 기본 정보는 모두 양수를 입력해주세요)" << endl;
+				continue;
+			}
+		}
+		else if (choice_in == 2) {
+			cout << "직접 측정하신 기초 대사량을 입력해주세요 ▷ ";
+			cin >> Calcalculator;
+		}
+		else if (choice_in == 0) {
+			//뒤로 가기
+			system("cls");
+		}
+		else {
+			//choice_in에 대한 예외처리
+			cout << "           ***입력 오류***" << endl;
+			cout << "(반드시 1과 2 중에 하나를 입력해주세요)" << endl;
+			continue;
+		}
+		flag = false;
 	}
-	else if (choice_in == 2) {
-
-	}
-	else if (choice_in == 0) {
-		//뒤로 가기
-		system("cls");
-	}
-	//예외처리
+	cout << "당신의 하루 권장 칼로리 섭취량은 " << Calcalculator << "kcal입니다" << endl;
+	cout << "메뉴로 돌아갑니다" << endl;
+	system("cls");
+	return Calcalculator;
 }
 
-void dietplan() {  //식단 짜는 함수 
+
+void Dietplan() {  //식단 짜는 함수 
 	//하루 평균 칼로리와 입력된 일 수 평균 칼로리(일 수가 일주일 이상이면 일주일의 평균, 한달 이상이면 한달 평균 칼로리가 추가로 제공됨)가 결과로 출력됨
 	//직접 입력에서는 음식이름에 글자수 제한을 둠
 	cout << "" << endl;
@@ -154,9 +175,14 @@ void dietplan() {  //식단 짜는 함수
 	//예외처리
 }
 
-void menu(void) {  //메뉴 여러 가지 중에 선택할 수 있도록 함. 키보드로 입력받음
+void menu(void) {  
+	//메뉴 여러 가지 중에 선택할 수 있도록 함. 키보드로 입력받음
 
+	//계산된(또는 입력된) 하루 권장 칼로리 섭취량
+	double Calcalculator;
+	//메뉴 입력
 	int input = 0;
+	//메뉴 함수 종료 후 프로그램 종료하기 위한 변수
 	bool CorE = true;
 
 	//메뉴는 계속 돌면서 사용자가 그만하기를 원한다면, 종료됨
@@ -164,11 +190,12 @@ void menu(void) {  //메뉴 여러 가지 중에 선택할 수 있도록 함. �
 		//선택할 메뉴 출력
 		cout << endl;
 		cout << "▶ 메뉴 " << endl << endl;
-		cout << "   1. 연령별 하루 칼로리 권장량 및 " << endl;
+		cout << "   1. 연령별 하루 권장 칼로리 섭취량 " << endl;
 		cout << "   2. 식단 짜기" << endl;
 		cout << "   3. 식단, 먹은 음식에 따른 운동 강도나 종류 추천" << endl;
 		cout << "   4. 먹은 음식 칼로리 계산" << endl;
-		cout << "   5. 프로그램 종료" << endl;
+		cout << "   5. 짠 식단 확인" << endl;
+		cout << "   6. 프로그램 종료" << endl;
 		cout << endl;
 
 		//기능 선택
@@ -180,10 +207,10 @@ void menu(void) {  //메뉴 여러 가지 중에 선택할 수 있도록 함. �
 
 		switch (input) {
 		case 1:
-			RecoCal();
+			Calcalculator = RecoCal();
 			break;
 		case 2:
-			dietplan();
+			Dietplan();
 			break;
 		case 3:
 			//_3();
@@ -192,6 +219,9 @@ void menu(void) {  //메뉴 여러 가지 중에 선택할 수 있도록 함. �
 			//_4();
 			break;
 		case 5:
+			//_5();
+			break;
+		case 6:
 			CorE = false;
 			break;
 		default:  //잘못된 입력-->다시 입력하도록 함.
