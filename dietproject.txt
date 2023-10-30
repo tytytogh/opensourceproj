@@ -6,7 +6,6 @@
 
 using namespace std;
 
-
 struct person {
 	//한 사람의 신체 정보
 
@@ -15,46 +14,143 @@ struct person {
 	//나이
 	int age;
 	//체중과 신장 저장할 변수
-	int weight, height;
+	int weight;
+	double height;
 };
 
-double H_V(person p) {
-	//해리스 베네딕트 공식에 의한 하루 기초대사량 추정치 계산
+double tdee(person p, int activeMeta_in) {
+	//하루 총 에너지 소비량 추정치 계산
+	//2020 한국인 영양소 섭취기준의 EER 산출공식에 따름
 
-	//결과 저장
+	//계산 결과 저장 변수
 	double result;
 
-	if (p.gender == 'm' || p.gender == 'M') { //남성일 때
-		result = (13.7516 * p.weight) + (5.0033 * p.height) - (6.7550 * p.age) + 66.4730;
+	if (activeMeta_in == 1) {
+		if (p.gender == 'm' || p.gender == 'M') { //남성일 때
+			if (p.age < 20 && p.age > 2) {
+				//나이가 3살부터 19살 사이
+				result = 88.5 - (61.9 * p.age) + 1.0 * (26.7 * p.weight + 903 * p.height / 100);
+			}
+			else if (p.age >= 20) {
+				//20세 이상
+				result = 662 - (9.53 * p.age) + 1.0 * (15.91 * p.weight + 539.6 * p.height / 100);
+			}
+			else {
+				//예외
+				return 0;
+			}
+		}
+		else if (p.gender == 'w' || p.gender == 'W') { //여성일 때
+			if (p.age < 20 && p.age > 2) {
+				result = 135.3 - (30.8 * p.age) + 1.0 * (10.0 * p.weight + 934 * p.height / 100);
+			}
+			else if (p.age >= 20) {
+				result = 354 - (6.91 * p.age) + 1.0 * (9.36 * p.weight + 726 * p.height / 100);
+			}
+			else {
+				//예외
+				return 0;
+			}
+		}
+		else {
+			//예외
+			return 0;
+		}
 	}
-	else if (p.gender == 'w' || p.gender == 'W') { //여성일 때
-		result = (9.5634 * p.weight) + (1.8496 * p.height) - (4.6756 * p.age) + 655.0955;
+	else if (activeMeta_in == 2) {
+		if (p.gender == 'm' || p.gender == 'M') { //남성일 때
+			if (p.age < 20 && p.age > 2) {
+				result = 88.5 - (61.9 * p.age) + 1.13 * (26.7 * p.weight + 903 * p.height / 100);
+			}
+			else if (p.age >= 20) {
+				result = 662 - (9.53 * p.age) + 1.11 * (15.91 * p.weight + 539.6 * p.height / 100);
+			}
+			else {
+				//예외
+				return 0;
+			}
+		}
+		else if (p.gender == 'w' || p.gender == 'W') { //여성일 때
+			if (p.age < 20 && p.age > 2) {
+				result = 135.3 - (30.8 * p.age) + 1.16 * (10.0 * p.weight + 934 * p.height / 100);
+			}
+			else if (p.age >= 20) {
+				result = 354 - (6.91 * p.age) + 1.12 * (9.36 * p.weight + 726 * p.height / 100);
+			}
+			else {
+				//예외
+				return 0;
+			}
+		}
+		else {
+			//예외
+			return 0;
+		}
+	}
+	else if (activeMeta_in == 3) {
+		if (p.gender == 'm' || p.gender == 'M') { //남성일 때
+			if (p.age < 20 && p.age > 2) {
+				result = 88.5 - (61.9 * p.age) + 1.26 * (26.7 * p.weight + 903 * p.height / 100);
+			}
+			else if (p.age >= 20) {
+				result = 662 - (9.53 * p.age) + 1.25 * (15.91 * p.weight + 539.6 * p.height / 100);
+			}
+			else {
+				//예외
+				return 0;
+			}
+		}
+		else if (p.gender == 'w' || p.gender == 'W') { //여성일 때
+			if (p.age < 20 && p.age > 2) {
+				result = 135.3 - (30.8 * p.age) + 1.31 * (10.0 * p.weight + 934 * p.height / 100);
+			}
+			else if (p.age >= 20) {
+				result = 354 - (6.91 * p.age) + 1.27 * (9.36 * p.weight + 726 * p.height / 100);
+			}
+			else {
+				//예외
+				return 0;
+			}
+		}
+		else {
+			//예외
+			return 0;
+		}
+	}
+	else if (activeMeta_in == 4) {
+		if (p.gender == 'm' || p.gender == 'M') { //남성일 때
+			if (p.age < 20 && p.age > 2) {
+				result = 88.5 - (61.9 * p.age) + 1.42 * (26.7 * p.weight + 903 * p.height / 100);
+			}
+			else if (p.age >= 20) {
+				result = 662 - (9.53 * p.age) + 1.56 * (15.91 * p.weight + 539.6 * p.height / 100);
+			}
+			else {
+				//예외
+				return 0;
+			}
+		}
+		else if (p.gender == 'w' || p.gender == 'W') { //여성일 때
+			if (p.age < 20 && p.age > 2) {
+				result = 135.3 - (30.8 * p.age) + 1.48 * (10.0 * p.weight + 934 * p.height / 100);
+			}
+			else if (p.age >= 20) {
+				result = 354 - (6.91 * p.age) + 1.45 * (9.36 * p.weight + 726 * p.height / 100);
+			}
+			else {
+				//예외
+				return 0;
+			}
+		}
+		else {
+			//예외
+			return 0;
+		}
 	}
 	else {
-		//예외
+		//activeMeta_in 예외 처리
 		return 0;
 	}
-
-	return result;
-}
-
-double M_S(person p) {
-	//미플린 세인트 지어 공식에 의한 하루 기초대사량 추정치 계산
-
-	//결과 저장
-	double result;
-
-	if (p.gender == 'm' || p.gender == 'M') { //남성일 때
-		result = (13.397 * p.weight) + (4.799 * p.height) - (5.677 * p.age) + 88.362;
-	}
-	else if (p.gender == 'w' || p.gender == 'W') { //여성일 때
-		result = (9.247 * p.weight) + (3.098 * p.height) - (4.330 * p.age) + 447.593;
-	}
-	else {
-		//예외
-		return 0;
-	}
-
 	return result;
 }
 
@@ -68,11 +164,13 @@ double RecoCal() {
 
 	//권장량을 계산할지, 결과만 입력할지 선택할 변수
 	int choice_in;
+	//기초대사량 저장할 변수
+	double bmr;
 	//칼로리 계산기 결과 저장할 변수
 	double Calcalculator;
-	//공식 선택 변수;
-	int fomula_choice;
-
+	//활동 대사량 입력받을 변수
+	int activeMeta_in;
+	
 	while (flag) {
 		//flag 변수가 예외때문에 continue로 가지 않고, 예외가 없이 잘 입력됐을 때 탈출
 
@@ -81,19 +179,6 @@ double RecoCal() {
 		cin >> choice_in;
 
 		if (choice_in == 1) {
-
-			cout << "하루 권장 칼로리 섭취량(kcal/day)을 구하기 위한 공식은 2가지가 있습니다" << endl << endl;
-			cout << "1. 해리스 베네딕트 공식" << endl;
-			cout << "2. 미플린 세인트 지어 공식" << endl;
-			cout << "원하는 공식을 입력해주세요 ▷ " << endl;
-			cin >> fomula_choice;
-
-			//fomula_choice에 대한 예외 처리
-			if (fomula_choice != 1&& fomula_choice != 2) {
-				cout << "        ***공식 선택 오류***" << endl;
-				cout << "(반드시 1과 2 중에 하나를 입력해주세요)" << endl;
-				continue;
-			}
 
 			cout << " > 기본 정보 입력 < " << endl;
 			cout << "성별(남성은 m, 여성은 w) 입력 ▷ ";
@@ -104,23 +189,29 @@ double RecoCal() {
 			cin >> p.weight;
 			cout << "신장(cm) 입력 ▷ ";
 			cin >> p.height;
-
-			if (fomula_choice == 1) {
-				Calcalculator = H_V(p);
-			}
-			else if (fomula_choice == 2) {
-				Calcalculator = M_S(p);
-			}
+			cout << endl;
+			cout << "다음은 활동 대사량을 계산하기 위한 정보 입력입니다" << endl;
+			cout << "다음 신체활동단계 중 해당하는 번호를 하나 입력해주세요" << endl;
+			cout << "비활동적이면 1" << endl;
+			cout << "저활동적이면 2" << endl;
+			cout << "활동적이면 3" << endl;
+			cout << "매우 활동적이면 4를 입력해주세요" << endl;
+			cout << "입력 ▷ " << endl;
+			cin >> activeMeta_in;
+			cout << endl;
+			
+			Calcalculator = tdee(p, activeMeta_in);
 			
 			if (Calcalculator == 0) {
 				//기본 정보 입력값에 대한 예외처리
+				system("cls");
 				cout << "                     ***기본 정보 입력 오류***" << endl;
 				cout << "(반드시 성별은 m과 w 중에 하나, 기본 정보는 모두 양수를 입력해주세요)" << endl;
 				continue;
 			}
 		}
 		else if (choice_in == 2) {
-			cout << "직접 측정하신 기초 대사량을 입력해주세요 ▷ ";
+			cout << "직접 측정하신 총에너지소비량을 입력해주세요 ▷ ";
 			cin >> Calcalculator;
 		}
 		else if (choice_in == 0) {
@@ -129,15 +220,16 @@ double RecoCal() {
 		}
 		else {
 			//choice_in에 대한 예외처리
+			system("cls");
 			cout << "           ***입력 오류***" << endl;
 			cout << "(반드시 1과 2 중에 하나를 입력해주세요)" << endl;
 			continue;
 		}
 		flag = false;
 	}
-	cout << "당신의 하루 권장 칼로리 섭취량은 " << Calcalculator << "kcal입니다" << endl;
-	cout << "메뉴로 돌아갑니다" << endl;
 	system("cls");
+	cout << "당신의 하루 총 칼로리 필요량 추정치는 " << Calcalculator << "kcal입니다" << endl;
+	cout << "메뉴로 돌아갑니다" << endl;
 	return Calcalculator;
 }
 
