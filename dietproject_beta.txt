@@ -23,139 +23,40 @@ double tdee(person p, int activeMeta_in) {
 	//하루 총 에너지 소비량 추정치 계산
 	//2020 한국인 영양소 섭취기준의 EER 산출공식에 따름
 
+	//활동대사량 비율 저장할 배열
+	//남성,3~19
+	double active1[4] = { 1.0,1.13,1.26,1.42 };
+	//남성,20이상
+	double active2[4] = { 1.0,1.11,1.25,1.56 };
+	//여성,3~19
+	double active3[4] = { 1.0,1.16,1.31,1.48 };
+	//여성,20이상
+	double active4[4]{ 1.0,1.12,1.27,1.45 };
 	//계산 결과 저장 변수
 	double result;
 
-	if (activeMeta_in == 1) { //비활동적
-		if (p.gender == 'm' || p.gender == 'M') { //남성일 때
-			if (p.age < 20 && p.age > 2) {
-				//나이가 3살부터 19살 사이
-				result = 88.5 - (61.9 * p.age) + 1.0 * (26.7 * p.weight + 903 * p.height / 100);
-			}
-			else if (p.age >= 20) {
-				//20세 이상
-				result = 662 - (9.53 * p.age) + 1.0 * (15.91 * p.weight + 539.6 * p.height / 100);
-			}
-			else {
-				//예외
-				return 0;
-			}
+	if (p.gender == 'm' || p.gender == 'M') { //남성일 때
+		if (p.age < 20 && p.age > 2) {
+			//나이가 3살부터 19살 사이
+			result = 88.5 - (61.9 * p.age) + active1[activeMeta_in - 1] * (26.7 * p.weight + 903 * p.height / 100);
 		}
-		else if (p.gender == 'w' || p.gender == 'W') { //여성일 때
-			if (p.age < 20 && p.age > 2) {
-				//3~19세
-				result = 135.3 - (30.8 * p.age) + 1.0 * (10.0 * p.weight + 934 * p.height / 100);
-			}
-			else if (p.age >= 20) {
-				//20세 이상
-				result = 354 - (6.91 * p.age) + 1.0 * (9.36 * p.weight + 726 * p.height / 100);
-			}
-			else {
-				//예외
-				return 0;
-			}
+		else if (p.age >= 20) {
+			//20세 이상
+			result = 662 - (9.53 * p.age) + active2[activeMeta_in - 1] * (15.91 * p.weight + 539.6 * p.height / 100);
 		}
 		else {
 			//예외
 			return 0;
 		}
 	}
-	else if (activeMeta_in == 2) { //저활동적
-		if (p.gender == 'm' || p.gender == 'M') { //남성일 때
-			if (p.age < 20 && p.age > 2) {
-				//3~19세
-				result = 88.5 - (61.9 * p.age) + 1.13 * (26.7 * p.weight + 903 * p.height / 100);
-			}
-			else if (p.age >= 20) {
-				//20세 이상
-				result = 662 - (9.53 * p.age) + 1.11 * (15.91 * p.weight + 539.6 * p.height / 100);
-			}
-			else {
-				//예외
-				return 0;
-			}
+	else if (p.gender == 'w' || p.gender == 'W') { //여성일 때
+		if (p.age < 20 && p.age > 2) {
+			//3~19세
+			result = 135.3 - (30.8 * p.age) + active3[activeMeta_in - 1] * (10.0 * p.weight + 934 * p.height / 100);
 		}
-		else if (p.gender == 'w' || p.gender == 'W') { //여성일 때
-			if (p.age < 20 && p.age > 2) {
-				//3~19세
-				result = 135.3 - (30.8 * p.age) + 1.16 * (10.0 * p.weight + 934 * p.height / 100);
-			}
-			else if (p.age >= 20) {
-				//20세 이상
-				result = 354 - (6.91 * p.age) + 1.12 * (9.36 * p.weight + 726 * p.height / 100);
-			}
-			else {
-				//예외
-				return 0;
-			}
-		}
-		else {
-			//예외
-			return 0;
-		}
-	}
-	else if (activeMeta_in == 3) { //활동적
-		if (p.gender == 'm' || p.gender == 'M') { //남성일 때
-			if (p.age < 20 && p.age > 2) {
-				//3~19세
-				result = 88.5 - (61.9 * p.age) + 1.26 * (26.7 * p.weight + 903 * p.height / 100);
-			}
-			else if (p.age >= 20) {
-				//20세 이상
-				result = 662 - (9.53 * p.age) + 1.25 * (15.91 * p.weight + 539.6 * p.height / 100);
-			}
-			else {
-				//예외
-				return 0;
-			}
-		}
-		else if (p.gender == 'w' || p.gender == 'W') { //여성일 때
-			if (p.age < 20 && p.age > 2) {
-				//3~19세
-				result = 135.3 - (30.8 * p.age) + 1.31 * (10.0 * p.weight + 934 * p.height / 100);
-			}
-			else if (p.age >= 20) {
-				//20세 이상
-				result = 354 - (6.91 * p.age) + 1.27 * (9.36 * p.weight + 726 * p.height / 100);
-			}
-			else {
-				//예외
-				return 0;
-			}
-		}
-		else {
-			//예외
-			return 0;
-		}
-	}
-	else if (activeMeta_in == 4) { //매우 활동적
-		if (p.gender == 'm' || p.gender == 'M') { //남성일 때
-			if (p.age < 20 && p.age > 2) {
-				//3~19세
-				result = 88.5 - (61.9 * p.age) + 1.42 * (26.7 * p.weight + 903 * p.height / 100);
-			}
-			else if (p.age >= 20) {
-				//20세 이상
-				result = 662 - (9.53 * p.age) + 1.56 * (15.91 * p.weight + 539.6 * p.height / 100);
-			}
-			else {
-				//예외
-				return 0;
-			}
-		}
-		else if (p.gender == 'w' || p.gender == 'W') { //여성일 때
-			if (p.age < 20 && p.age > 2) {
-				//3~19세
-				result = 135.3 - (30.8 * p.age) + 1.48 * (10.0 * p.weight + 934 * p.height / 100);
-			}
-			else if (p.age >= 20) {
-				//20세 이상
-				result = 354 - (6.91 * p.age) + 1.45 * (9.36 * p.weight + 726 * p.height / 100);
-			}
-			else {
-				//예외
-				return 0;
-			}
+		else if (p.age >= 20) {
+			//20세 이상
+			result = 354 - (6.91 * p.age) + active4[activeMeta_in - 1] * (9.36 * p.weight + 726 * p.height / 100);
 		}
 		else {
 			//예외
@@ -163,9 +64,10 @@ double tdee(person p, int activeMeta_in) {
 		}
 	}
 	else {
-		//activeMeta_in 예외 처리
+		//예외
 		return 0;
 	}
+
 	return result;
 }
 
@@ -192,13 +94,19 @@ double recoCal() {
 		cin >> choice_in;
 
 		if (choice_in == 1) {
-			
+
 			//기본정보 설명 프린트
 			cout << " > 기본 정보 입력 < " << endl;
 			cout << "성별(남성은 m, 여성은 w) 입력 ▷ ";
 			cin >> p.gender;
 			cout << "나이(세) 입력 ▷ ";
 			cin >> p.age;
+			if (p.age < 3) {
+				//나이 예외
+				system("cls");
+				cout << "나이는 3세 이상부터 입력 가능합니다";
+				continue;
+			}
 			cout << "체중(kg) 입력 ▷ ";
 			cin >> p.weight;
 			cout << "신장(cm) 입력 ▷ ";
@@ -248,7 +156,7 @@ double recoCal() {
 	return Calcalculator;
 }
 
-int filemanage(int days) {
+void filemanage(int days, double Calcalculator) {
 	//양수 days가 들어옴
 
 	//식단에 음식을 추가할 방법
@@ -260,6 +168,25 @@ int filemanage(int days) {
 	ifstream incal;
 	//foodtable에서 가져올 직접 입력한 음식 저장할 string 변수
 	string foodinhand;
+
+	//파일 오픈
+	infood.open("foodtable.txt");
+	incal.open("calories");
+	//파일이 올바르지 않다면 종료
+	if (infood.fail() || incal.fail()) {
+		return;
+	}
+
+	//파일 포인터를 끝으로 옮김
+	infood.seekg(0, ios::end);
+	incal.seekg(0, ios::end);
+	//파일에서 음식과 음식 칼로리를 받아오기
+	
+
+	//직접 입력한 음식이름과 칼로리를 각 텍스트 파일에 저장하기 위한 객체
+	ofstream inhand;
+	//아,점,저 텍스트 파일에 각각 쓰기 위한 객체
+
 	//아침,점심,저녁 각각 입력받은 텍스트들을 저장할 string변수 3개
 	//아침
 	string breakfast;
@@ -268,21 +195,8 @@ int filemanage(int days) {
 	//저녁
 	string dinner;
 
-	//파일 오픈
-	infood.open("foodtable.txt");
-	incal.open("calories");
-	//파일이 올바르지 않다면 메뉴로 이동
-	if (infood.fail() || incal.fail()) {
-		return 0;
-	}
-
-		//파일에서 음식과 음식 칼로리를 받아오기
-
-
-		//직접 입력한 음식이름과 칼로리를 각 텍스트 파일에 저장하기 위한 객체
-
 	for (int i = 0; i < days; i++) {
-		cout << " ▷ 식단짜는 방법 선택(1과 2중 선택)" << endl;
+		cout << "식단짜는 방법 선택(1과 2중 선택) ▷ " << endl;
 		cin >> way;
 		if (way == 1) {
 			//종류에서 선택
@@ -305,39 +219,33 @@ int filemanage(int days) {
 	infood.close();
 	incal.close();
 
-	return 0;
+	return;
 }
 
-int dietplan(double Calcaculato) {  //식단 짜는 함수 
+void dietplan(double Calcalculator) {  //식단 짜는 함수 
 	//하루 평균 칼로리가 결과로 출력됨
 	//직접 입력에서는 음식이름에 글자수 제한을 둠
 
 	//식단을 짤 일 수
 	int days;
 	//뒤로가기 구현위한 변수
-    
-   
+
+
 	//식단 짜기 설명 프린트
 	cout << "                                         식단 짜기" << endl;
 	cout << "                        먼저 식단을 짜고 싶으신 일 수를 입력해주세요" << endl;
 	cout << "그리고 식단에 음식을 추가하는 방법(1.직접 입력과 2.저장된 음식 칼로리 중에서)을 선택해주세요" << endl;
 	cout << "              짜신 식단은 하루 아침 점심 저녁 별로 일마다 따로따로 출력됩니다" << endl << endl;
 	cout << " ▷ 식단을 짜려고 하는 일 수" << endl;
-	cout << " ▷ 뒤로가기(숫자 0 입력)" << endl;
+	cout << " ▷ 뒤로가기(0 또는 음수 입력)" << endl;
 	cin >> days;
 
-	if (days == 0) {
-		//뒤로 가기
-		system("cls");
+	if (days > 0) {
+		filemanage(days, Calcalculator);
 	}
-	else if (days > 0) {
-		filemanage(days);
-	}
-	else {
-		//예외
-	}
+	system("cls");
 
-	return 0;
+	return;
 }
 
 void menu(void) {
