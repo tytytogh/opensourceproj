@@ -4,7 +4,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
 #include <windows.h>
 using namespace std;
 
@@ -25,9 +24,9 @@ double tdee(person p, int activeMeta_in) {
 	//2020 한국인 영양소 섭취기준의 EER 산출공식에 따름
 
 	//활동대사량 비율 저장할 배열
-	double active[4][4] = { { 1.0,1.13,1.26,1.42 }, 
-							{ 1.0,1.11,1.25,1.56 }, 
-							{ 1.0,1.16,1.31,1.48 }, 
+	double active[4][4] = { { 1.0,1.13,1.26,1.42 },
+							{ 1.0,1.11,1.25,1.56 },
+							{ 1.0,1.16,1.31,1.48 },
 							{ 1.0,1.12,1.27,1.45 } };
 	//계산 결과 저장 변수
 	double result;
@@ -156,6 +155,32 @@ double recoCal() {
 	return Calcalculator;
 }
 
+void printType() {
+	//종류 출력
+	cout << "1 곡류" << endl;
+	cout << "2 면류" << endl;
+	cout << "3 떡류" << endl;
+	cout << "4 빵류" << endl;
+	cout << "5 시리얼류" << endl;
+	cout << "6 감자류" << endl;
+	cout << "7 기타 곡류" << endl;
+	cout << "8 과자류" << endl;
+	cout << "9 고기류" << endl;
+	cout << "10 어패류" << endl;
+	cout << "11 난류" << endl;
+	cout << "12 콩류" << endl;
+	cout << "13 견과류" << endl;
+	cout << "14 채소류" << endl;
+	cout << "15 해조류" << endl;
+	cout << "16 버섯류" << endl;
+	cout << "17 과일류" << endl;
+	cout << "18 우유" << endl;
+	cout << "19 유제품" << endl;
+	cout << "20 유지류" << endl;
+	cout << "21 당류" << endl;
+	cout << "22 기타 입력되었던 음식" << endl;
+}
+
 void filemanage(int days, double Calcalculator) {
 	//양수 days가 들어옴
 
@@ -164,24 +189,34 @@ void filemanage(int days, double Calcalculator) {
 	//음식이름 입력 받을 string 객체
 	string inhand_food;
 	//음식 칼로리 입력 받을 변수
-	int inhand_cal;
+	double inhand_cal;
 	//***********종류별로 각각 따로 텍스트를 분리할 string 객체 필요할 듯
-	//저장된 음식 이름 파일입력 스트림 관리 객체
+	//저장된 음식 종류 파일입력 스트림 관리 객체
 	ifstream infood;
 	//저장된 음식별 그램당 칼로리 파일입력 스트림 관리 객체
 	ifstream incal;
-	//foodtable에서 가져올 직접 입력한 음식 저장할 string 객체
-	string foodinhand;
-	//직접 입력한 음식이름과 칼로리를 각 텍스트 파일에 저장하기 위한 객체
+	//직접 입력한 음식종류과 칼로리를 각 텍스트 파일에 저장하기 위한 객체
 	ofstream inhand;
-	//foodtable에서 가져올 텍스트 저장 공간
-	string food;
-	//calories에서 가져올 텍스트 저장 공간
-	string cal;
+	//'\r' 개수 셀 변수
+	//음식 이름, 칼로리 스트링의 배열 개수 
+	int count = 0;
+	//음식 종류 번호 입력받을 변수
+	int type_in;
+	//아침,점심,저녁을 입력받아서 임시로 저장할 string 객체
+	string breakfast;
+	string lunch;
+	string dinner;
+	//foodType과 foodCal의 인덱스 count와 동일하게 사용할 변수
+	//사용자가 선택한 음식의 인덱스 확인
+	int foodnum_in;
+	//해당 음식의 그램수 입력받을 변수
+	int gram;
+
+	//파일에서 음식 종류와 음식 칼로리를 foodtype, foodcal에 받아오기
 
 	//파일 오픈(ifstream 디폴트인 iso::in 모드)
 	infood.open("foodtable.txt");
-	incal.open("calories.txt");
+	incal.open("caltable.txt");
 	//파일이 올바르지 않다면 종료
 	if (infood.fail() || incal.fail()) {
 		cout << "파일 오류입니다" << endl;
@@ -190,77 +225,104 @@ void filemanage(int days, double Calcalculator) {
 		return;
 	}
 
+	//파일에 있는 음식 종류의 개수 확인
+
 	//파일 포인터를 끝으로 옮김
 	infood.seekg(0, ios::end);
 	incal.seekg(0, ios::end);
 	//파일 크기 저장(파일의 각 줄의 끝에는 \r과 \n이 들어가있음)
 	int sizefood = infood.tellg();
 	int sizecal = incal.tellg();
-	//다시 파일 포인터 원상복구
+	//다시 파일 포인터 파일 맨 앞으로 옮김
 	infood.seekg(0, ios::beg);
 	incal.seekg(0, ios::beg);
-	//'\r' 개수 셀 변수
-	int countfood = 0;
-	int countcal = 0;
-
-	//각 파일의 텍스트를 객체로 옮김(스페이스로 줄 구분x)
-	getline(infood, food);
-	getline(incal, cal);
-
 	//음식이름, 칼로리 텍스트 중 \r 개수 세기
-	for (int i = 0; i < sizefood; i++) { //******************위에서 food 스트링 객체에 5개의 원소가 있으므로, 그 이상 읽으려고해서 오류 남
-		if (food[i]=='\r') {
-			countfood++;
-		}
+	//infood.eof()함수는 파일 끝에서 true이므로
+	//파일 끝이 아닐 때까지만 동작하게함
+	while (!infood.eof()) {
+		string s;
+		getline(infood,s);
+		count++;
 	}
-	for (int i = 0; i < sizecal; i++) {
-		if (cal[i] == '\r') {
-			countcal++;
-		}
+	//다시 파일 포인터 파일 맨 앞으로 옮김
+	infood.seekg(0, ios::beg);
+	incal.seekg(0, ios::beg);
+	//각 종류를 저장할 string 공간 할당
+	string* foodType = new string[count];
+	//각 칼로리 저장할 string 공간 할당
+	string* foodCal = new string[count];
+	//각 칼로리를 double형으로 변환해서 저장할 공간 할당
+	double* doubleCal = new double[count];
+	//각 string에 텍스트 파일에서 데이터 읽어오기
+	for (int i = 0; i < count; i++) {
+		getline(infood,foodType[i]);
 	}
-	//음식 이름과 칼로리 텍스트 길이
-	int foodlength = sizefood - (2 * countfood);
-	int callength = sizecal - (2 * countcal) + 1;
-	//각 종류를 저장할 string 객체를 저장할 vector(size는 텍스트 size)
-	vector<string> f(foodlength);
-	vector<string> c(callength);
-	//각 벡터의 string에 텍스트 파일에서 읽어오기
-	for (int i = 0; i < foodlength; i++) {
-		getline(infood, f[i]);
+	for (int i = 0; i < count; i++) {
+		getline(incal, foodCal[i]);
 	}
-	for (int i = 0; i < callength; i++) {
-		getline(incal, c[i]);
+	//string으로 된 칼로리를 double형으로
+	for (int i = 0; i < count; i++) {
+		doubleCal[i] = stod(foodCal[i]);
 	}
-	for (int i = 0; i < foodlength; i++) {
-		cout << f[i] << endl;
-	}
-	//파일에서 음식과 음식 칼로리를 받아오기
-	
 
-
+	//사용자에게 음식타입과 칼로리를 종류별로 출력하고
+	//사용자가 하루(아침,점심,저녁)를 입력했다면, 입력한 내용을 파일에 씀
+	//다 짰다면 메뉴로 돌아가서 식단 보기에서 볼 수 있게 함   
 	for (int i = 0; i < days; i++) {
-		cout << "식단짜는 방법 선택(1과 2중 선택) ▷ ";
+		cout << "식단짜는 방법 선택(1과 2 중 선택) ▷ ";
 		cin >> way;
 		if (way == 1) {
 			//종류에서 선택
+			
+			//종류 출력
+			printType();
+			//종류 입력 요청
+			cout << "원하시는 종류 번호를 입력해주세요 ▷ ";
+			cin >> type_in;
 
+			//화면 지우기
+			system("cls");
+			cout << "종류" << type_in << "번" << endl;
+			//선택된 종류에 속한 음식 출력
+			for (int j = 0; j < count; j++) {
+				//종류에 속한 음식 찾아서 출력
+
+				//입력받은 type_in을 스트링으로 바꿔서 foodType 내에서 가장 먼저 나오는
+				//to_string(type_in)의 시작 위치가 0일 때, 다음 if문 실행
+				if (foodType[j].find(to_string(type_in)) == 0) { //*****문제 발생*****만약 음식종류가 1,2번인 경우, 10,11,12,13,...이 같이 출력됨
+					cout << j << "번 " << foodType[j] << endl;
+				}
+			}
+			cout << "당신의 하루 총칼로리 필요량 추정치는 " << Calcalculator << "입니다" << endl;
+			//아침 음식 선택
+			cout << i + 1 << "일 아침 식단에 입력할 음식 선택(음식 맨 앞의 번호) ▷ ";
+			cin >> foodnum_in;
+			cout << "해당 음식의 드실 그램수(정수)를 입력해주세요 ▷ ";
+			cin >> gram;
 		}
 		else if (way == 2) {
 			//직접 입력
-			cout << "음식 이름을 입력하세요(영어로) ▷ ";
+			cout << "음식 이름을 입력하세요(영어로만 가능) ▷ ";
 			//음식 이름 저장
 			cin >> inhand_food;
-			inhand << inhand_food;
-			cout << "음식의 드신 양의 칼로리를 입력해주세요";
-			//*****입력받은 칼로리를 calories 파일에 저장해야함 -> 반드시 그램당 칼로리일 것!
+			//inhand << inhand_food;
+			cout << "음식의 드신 양의 칼로리를 입력해주세요 ▷ ";
+			cin >> inhand_cal;
+			//*****입력받은 칼로리를 inhand_cal 파일에 저장해야함 -> 반드시 그램당 칼로리일 것!
 			//incal << inhand_cal;
 		}
 		else {
 			//예외
+			cout << "반드시 1과 2 중에 선택해주세요" << endl;
 			i--;
 			continue;
 		}
 	}
+
+	//메모리 반환
+	delete[]foodType;
+	delete[]foodCal;
+	delete[]doubleCal;
 
 	//파일 닫기
 	infood.close();
@@ -275,8 +337,6 @@ void dietplan(double Calcalculator) {  //식단 짜는 함수
 
 	//식단을 짤 일 수
 	int days;
-	//뒤로가기 구현위한 변수
-
 
 	//식단 짜기 설명 프린트
 	cout << "                                         식단 짜기" << endl;
