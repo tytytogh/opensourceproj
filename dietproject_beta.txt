@@ -206,8 +206,7 @@ void filemanage(int days, double Calcalculator) {
 	string breakfast;
 	string lunch;
 	string dinner;
-	//foodType과 foodCal의 인덱스 count와 동일하게 사용할 변수
-	//사용자가 선택한 음식의 인덱스 확인
+	//사용자가 선택한 음식의 인덱스를 저장할 변수
 	int foodnum_in;
 	//해당 음식의 그램수 입력받을 변수
 	int gram;
@@ -241,7 +240,7 @@ void filemanage(int days, double Calcalculator) {
 	//파일 끝이 아닐 때까지만 동작하게함
 	while (!infood.eof()) {
 		string s;
-		getline(infood,s);
+		getline(infood, s);
 		count++;
 	}
 	//다시 파일 포인터 파일 맨 앞으로 옮김
@@ -255,7 +254,7 @@ void filemanage(int days, double Calcalculator) {
 	double* doubleCal = new double[count];
 	//각 string에 텍스트 파일에서 데이터 읽어오기
 	for (int i = 0; i < count; i++) {
-		getline(infood,foodType[i]);
+		getline(infood, foodType[i]);
 	}
 	for (int i = 0; i < count; i++) {
 		getline(incal, foodCal[i]);
@@ -268,12 +267,15 @@ void filemanage(int days, double Calcalculator) {
 	//사용자에게 음식타입과 칼로리를 종류별로 출력하고
 	//사용자가 하루(아침,점심,저녁)를 입력했다면, 입력한 내용을 파일에 씀
 	//다 짰다면 메뉴로 돌아가서 식단 보기에서 볼 수 있게 함   
-	for (int i = 0; i < days; i++) {
+	//내부에서 foodnum_in이 0일 때만 i가 유지되며 다시 한번 더 돎
+	for (int i = 0; i < days;) {
+
+
 		cout << "식단짜는 방법 선택(1과 2 중 선택) ▷ ";
 		cin >> way;
 		if (way == 1) {
 			//종류에서 선택
-			
+
 			//종류 출력
 			printType();
 			//종류 입력 요청
@@ -282,7 +284,7 @@ void filemanage(int days, double Calcalculator) {
 
 			//화면 지우기
 			system("cls");
-			cout << "종류" << type_in << "번" << endl;
+			cout << "종류 " << type_in << "번" << endl;
 			//선택된 종류에 속한 음식 출력
 			for (int j = 0; j < count; j++) {
 				//종류에 속한 음식 찾아서 출력
@@ -290,15 +292,30 @@ void filemanage(int days, double Calcalculator) {
 				//입력받은 type_in을 스트링으로 바꿔서 foodType 내에서 가장 먼저 나오는
 				//to_string(type_in)의 시작 위치가 0일 때, 다음 if문 실행
 				if (foodType[j].find(to_string(type_in)) == 0) { //*****문제 발생*****만약 음식종류가 1,2번인 경우, 10,11,12,13,...이 같이 출력됨
-					cout << j << "번 " << foodType[j] << endl;
+					cout << j << "번 " << foodType[j] << ' ' << foodCal[j] << "kcal/g" << endl;
 				}
 			}
-			cout << "당신의 하루 총칼로리 필요량 추정치는 " << Calcalculator << "입니다" << endl;
 			//아침 음식 선택
-			cout << i + 1 << "일 아침 식단에 입력할 음식 선택(음식 맨 앞의 번호) ▷ ";
+			cout << i + 1 << "일 아침 식단에 입력할 음식 선택(*음식 맨 앞의 번호*, 뒤로가기는 0 입력) ▷ ";
 			cin >> foodnum_in;
+			//foodnum_in에 정상적인 입력이 들어옴
+			if (foodnum_in > 0 && foodnum_in < count) {
+				i++;
+			}
+			//foodnum_in에 잘못된 입력 들어옴
+			//또는 종류에서 다시 선택하려고 함(foodnum_in에 0입력됨)
+			else {
+				continue;
+			}
 			cout << "해당 음식의 드실 그램수(정수)를 입력해주세요 ▷ ";
 			cin >> gram;
+			if (gram < 0) {
+				cout << "잘못된 입력입니다" << endl;
+				cout << "다시 선택으로 돌아갑니다" << endl;
+				Sleep(3000);
+				system("cls");
+				continue;
+			}
 		}
 		else if (way == 2) {
 			//직접 입력
@@ -317,6 +334,8 @@ void filemanage(int days, double Calcalculator) {
 			i--;
 			continue;
 		}
+		//칼로리 필요량 추정치 출력
+		cout << "당신의 하루 총칼로리 필요량 추정치는 " << Calcalculator << "입니다" << endl;
 	}
 
 	//메모리 반환
@@ -341,7 +360,7 @@ void dietplan(double Calcalculator) {  //식단 짜는 함수
 	//식단 짜기 설명 프린트
 	cout << "                                         식단 짜기" << endl;
 	cout << "                        먼저 식단을 짜고 싶으신 일 수를 입력해주세요" << endl;
-	cout << "그리고 식단에 음식을 추가하는 방법(1.직접 입력과 2.저장된 음식 칼로리 중에서)을 선택해주세요" << endl;
+	cout << "그리고 식단에 음식을 추가하는 방법(1.저장된 음식 칼로리과 2.칼로리 직접 입력 중에서)을 선택해주세요" << endl;
 	cout << "              짜신 식단은 하루 아침 점심 저녁 별로 일마다 따로따로 출력됩니다" << endl << endl;
 	cout << "뒤로가기(0 또는 음수 입력)" << endl;
 	cout << "식단을 짜려고 하는 일 수 ▷ ";
