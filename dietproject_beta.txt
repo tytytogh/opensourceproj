@@ -278,84 +278,181 @@ void filemanage(int days, double Calcalculator) {
 	//내부에서 foodnum_in이 0일 때만 i가 유지되며 다시 한번 더 돎
 	for (int i = 0; i < days;) {
 
+		//하루마다 아침, 점심, 저녁으로 구별하여 입력받기 위한 for문
+		for (int j = 0; j < 3;) {
+			if (j == 0) {	//j==0일 때 아침
+				cout << i + 1 << "일차 " << "아침" << endl;
+			}
+			else if (j == 1) {	//j==1일 때 점심
+				cout << i + 1 << "일차 " << "점심" << endl;
+			}
+			else {	//j==2일 때 저녁
+				cout << i + 1 << "일차 " << "저녁" << endl;
+			}
+			cout << "식단짜는 방법 선택(1과 2 중 선택) ▷ ";
+			cin >> way;
+			if (way == 1) {
+				//종류에서 선택
 
-		cout << "식단짜는 방법 선택(1과 2 중 선택) ▷ ";
-		cin >> way;
-		if (way == 1) {
-			//종류에서 선택
+				//종류 출력
+				printType();
+				//종류 입력 요청
+				cout << "원하시는 종류 번호를 입력해주세요 ▷ ";
+				cin >> type_in;
 
-			//종류 출력
-			printType();
-			//종류 입력 요청
-			cout << "원하시는 종류 번호를 입력해주세요 ▷ ";
-			cin >> type_in;
+				//화면 지우기
+				system("cls");
+				cout << "종류 " << type_in << "번" << endl;
+				//선택된 종류에 속한 음식 출력
+				for (int j = 0; j < count; j++) {
+					//종류에 속한 음식 찾아서 출력
 
-			//화면 지우기
-			system("cls");
-			cout << "종류 " << type_in << "번" << endl;
-			//선택된 종류에 속한 음식 출력
-			for (int j = 0; j < count; j++) {
-				//종류에 속한 음식 찾아서 출력
-
-				//입력받은 type_in을 스트링으로 바꿔서 foodType 내에서 가장 먼저 나오는
-				//to_string(type_in)의 시작 위치가 0일 때, 다음 if문 실행
-				if (foodType[j].find(to_string(type_in)) == 0) { //*****문제 발생*****만약 음식종류가 1,2번인 경우, 10,11,12,13,...이 같이 출력됨
-					cout << j << "번 " << foodType[j] << ' ' << foodCal[j] << "kcal/g" << endl;
+					//입력받은 type_in을 스트링으로 바꿔서 foodType 내에서 가장 먼저 나오는
+					//to_string(type_in)의 시작 위치가 0일 때, 다음 if문 실행
+					if (foodType[j].find(to_string(type_in)) == 0) { //*****문제 발생*****만약 음식종류가 1,2번인 경우, 10,11,12,13,...이 같이 출력됨
+						cout << j << "번 " << foodType[j] << ' ' << foodCal[j] << "kcal/g" << endl;
+					}
 				}
 			}
-			//아침 음식 선택
-			cout << i + 1 << "일 아침 식단에 입력할 음식 선택(*음식 맨 앞의 번호*, 뒤로가기는 0 입력) ▷ ";
-			cin >> foodnum_in;
-			//foodnum_in에 정상적인 입력이 들어옴
-			if (foodnum_in > 0 && foodnum_in < count) {
-				i++;
-			}
-			//foodnum_in에 잘못된 입력 들어옴
-			//또는 종류에서 다시 선택하려고 함(foodnum_in에 0입력됨)
-			else {
-				continue;
-			}
-			cout << "해당 음식의 드실 그램수(정수)를 입력해주세요 ▷ ";
-			cin >> gram;
-			if (gram < 0) {
-				cout << "잘못된 입력입니다" << endl;
-				cout << "다시 선택으로 돌아갑니다" << endl;
-				Sleep(3000);
-				system("cls");
-				continue;
-			}
-		}
-		else if (way == 2) {
+
 			//직접 입력
-			cout << "음식 이름을 입력하세요(영어로만 가능) ▷ ";
-			//음식 이름 저장
-			cin >> inhand_food;
-			//inhand << inhand_food;
-			cout << "음식의 드신 양의 칼로리를 입력해주세요 ▷ ";
-			cin >> inhand_cal;
-			//*****입력받은 칼로리를 inhand_cal 파일에 저장해야함 -> 반드시 그램당 칼로리일 것!
-			//incal << inhand_cal;
+			else if (way == 2) {
+				cout << "음식 이름을 입력하세요(영어로만 가능) ▷ ";
+				//음식 이름 저장
+				cin >> inhand_food;
+				//inhand << inhand_food;
+				cout << "음식의 드신 양의 칼로리를 입력해주세요(단위: kcal) ▷ ";
+				cin >> inhand_cal;
+				//*****입력받은 칼로리를 inhand_cal 파일에 저장해야함
+				//incal << inhand_cal;
+			}
+
+			//way 예외(way가 1 또는 2가 아닐 때)
+			else {
+				cout << "반드시 1과 2 중에 선택해주세요" << endl;
+				continue;
+			}
+
+			if (j == 0) {
+				//아침 음식 선택
+				cout << i + 1 << "일 아침 식단에 입력할 음식 선택(*음식 맨 앞의 번호*, 뒤로가기는 0 입력)" << endl << endl;
+				cout << "입력 ▷ ";
+				//음식이 저장된 string배열의 인덱스 받기
+				cin >> foodnum_in;
+				//foodnum_in에 정상적인 입력이 들어옴
+				if (foodnum_in > 0 && foodnum_in < count) {
+					i++;
+				}
+				//foodnum_in에 잘못된 입력 들어옴
+				//또는 종류에서 다시 선택하려고 함(foodnum_in에 0입력됨)
+				else {
+					continue;
+				}
+				//칼로리 그램수 입력
+				cout << "해당 음식의 드실 그램수(정수)를 입력해주세요" << endl << endl;
+				cout << "입력 ▷ ";
+				cin >> gram;
+				if (gram < 0) {
+					//gram이 0보다 작으면 다시 실행
+					cout << "잘못된 입력입니다" << endl;
+					cout << "다시 선택으로 돌아갑니다" << endl;
+					Sleep(2000);
+					system("cls");
+					continue;
+				}
+				//아침 string에 저장
+				//음식이름과 칼로리를 합쳐서 저장
+				breakfast = foodType[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]);
+			}
+			else if (j == 1) {
+				//점심 음식 선택
+				cout << i + 1 << "일 점심 식단에 입력할 음식 선택(*음식 맨 앞의 번호*, 뒤로가기는 0 입력)" << endl << endl;
+				cout << "입력 ▷ ";
+				//음식이 저장된 string배열의 인덱스 받기
+				cin >> foodnum_in;
+				//foodnum_in에 정상적인 입력이 들어옴
+				if (foodnum_in > 0 && foodnum_in < count) {
+					//점심 string에 저장
+					lunch = foodType[foodnum_in];
+					i++;
+				}
+				//foodnum_in에 잘못된 입력 들어옴
+				//또는 종류에서 다시 선택하려고 함(foodnum_in에 0입력됨)
+				else {
+					continue;
+				}
+				//칼로리 그램수 입력
+				cout << "해당 음식의 드실 그램수(정수)를 입력해주세요" << endl << endl;
+				cout << "입력 ▷ ";
+				cin >> gram;
+				if (gram < 0) {
+					//gram이 0보다 작으면 다시 실행
+					cout << "잘못된 입력입니다" << endl;
+					cout << "다시 선택으로 돌아갑니다" << endl;
+					Sleep(2000);
+					system("cls");
+					continue;
+				}
+				//아침 string에 저장
+				//음식이름과 칼로리를 합쳐서 저장
+				lunch = foodType[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]);
+			}
+			else {
+				//아침 음식 선택
+				cout << i + 1 << "일 저녁 식단에 입력할 음식 선택(*음식 맨 앞의 번호*, 뒤로가기는 0 입력)" << endl << endl;
+				cout << "입력 ▷ ";
+				//음식이 저장된 string배열의 인덱스 받기
+				cin >> foodnum_in;
+				//foodnum_in에 정상적인 입력이 들어옴
+				if (foodnum_in > 0 && foodnum_in < count) {
+					//저녁 string에 저장
+					dinner = foodType[foodnum_in];
+					i++;
+				}
+				//foodnum_in에 잘못된 입력 들어옴
+				//또는 종류에서 다시 선택하려고 함(foodnum_in에 0입력됨)
+				else {
+					continue;
+				}
+				//칼로리 그램수 입력
+				cout << "해당 음식의 드실 그램수(정수)를 입력해주세요" << endl << endl;
+				cout << "입력 ▷ ";
+				cin >> gram;
+				if (gram < 0) {
+					//gram이 0보다 작으면 다시 실행
+					cout << "잘못된 입력입니다" << endl;
+					cout << "다시 선택으로 돌아갑니다" << endl;
+					Sleep(2000);
+					system("cls");
+					continue;
+				}
+				//아침 string에 저장
+				//음식이름과 칼로리를 합쳐서 저장
+				dinner = foodType[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]);
+			}
+
+			//***아침,점심,저녁을 각각 다 짜면, j가 증가하도록 if문 만들어야 함***
+
+
+			//만약, 저녁을 다 짜면, 하루에 짠 아침,점심,저녁과 하루 총칼로리 모두 출력 후
+			//이걸로 할건지 물어봄. 그리고 그렇다하면 i++
+
+
+			//칼로리 필요량 추정치 출력
+			cout << "당신의 하루 총칼로리 필요량 추정치는 " << Calcalculator << "입니다" << endl;
 		}
-		else {
-			//예외
-			cout << "반드시 1과 2 중에 선택해주세요" << endl;
-			i--;
-			continue;
-		}
-		//칼로리 필요량 추정치 출력
-		cout << "당신의 하루 총칼로리 필요량 추정치는 " << Calcalculator << "입니다" << endl;
+
+		//메모리 반환
+		delete[]foodType;
+		delete[]foodCal;
+		delete[]doubleCal;
+
+		//파일 닫기
+		infood.close();
+		incal.close();
+
+		return;
 	}
-
-	//메모리 반환
-	delete[]foodType;
-	delete[]foodCal;
-	delete[]doubleCal;
-
-	//파일 닫기
-	infood.close();
-	incal.close();
-
-	return;
 }
 
 void dietplan(double Calcalculator) {  //식단 짜는 함수 
