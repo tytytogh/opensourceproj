@@ -31,28 +31,34 @@ double tdee(person p, int activeMeta_in) {
 	//계산 결과 저장 변수
 	double result;
 
-	if (p.gender == 'm' || p.gender == 'M') { //남성일 때
-		if (p.age < 20 && p.age > 2) {
-			//나이가 3살부터 19살 사이
-			result = 88.5 - (61.9 * p.age) + active[0][activeMeta_in - 1] * (26.7 * p.weight + 903 * p.height / 100);
+	if (activeMeta_in > 0 && activeMeta_in < 5) {
+		if (p.gender == 'm' || p.gender == 'M') { //남성일 때
+			if (p.age < 20 && p.age > 2) {
+				//나이가 3살부터 19살 사이
+				result = 88.5 - (61.9 * p.age) + active[0][activeMeta_in - 1] * (26.7 * p.weight + 903 * p.height / 100);
+			}
+			else if (p.age >= 20) {
+				//20세 이상
+				result = 662 - (9.53 * p.age) + active[1][activeMeta_in - 1] * (15.91 * p.weight + 539.6 * p.height / 100);
+			}
+			else {
+				//예외
+				return 0;
+			}
 		}
-		else if (p.age >= 20) {
-			//20세 이상
-			result = 662 - (9.53 * p.age) + active[1][activeMeta_in - 1] * (15.91 * p.weight + 539.6 * p.height / 100);
-		}
-		else {
-			//예외
-			return 0;
-		}
-	}
-	else if (p.gender == 'w' || p.gender == 'W') { //여성일 때
-		if (p.age < 20 && p.age > 2) {
-			//3~19세
-			result = 135.3 - (30.8 * p.age) + active[2][activeMeta_in - 1] * (10.0 * p.weight + 934 * p.height / 100);
-		}
-		else if (p.age >= 20) {
-			//20세 이상
-			result = 354 - (6.91 * p.age) + active[3][activeMeta_in - 1] * (9.36 * p.weight + 726 * p.height / 100);
+		else if (p.gender == 'w' || p.gender == 'W') { //여성일 때
+			if (p.age < 20 && p.age > 2) {
+				//3~19세
+				result = 135.3 - (30.8 * p.age) + active[2][activeMeta_in - 1] * (10.0 * p.weight + 934 * p.height / 100);
+			}
+			else if (p.age >= 20) {
+				//20세 이상
+				result = 354 - (6.91 * p.age) + active[3][activeMeta_in - 1] * (9.36 * p.weight + 726 * p.height / 100);
+			}
+			else {
+				//예외
+				return 0;
+			}
 		}
 		else {
 			//예외
@@ -60,6 +66,7 @@ double tdee(person p, int activeMeta_in) {
 		}
 	}
 	else {
+		//activeMeta_in값이 잘못됨
 		//예외
 		return 0;
 	}
@@ -115,7 +122,8 @@ double recoCal() {
 			cout << "저활동적이면 2" << endl;
 			cout << "활동적이면 3" << endl;
 			cout << "매우 활동적이면 4를 입력해주세요" << endl;
-			cout << "입력 ▷ " << endl;
+			cout << endl;
+			cout << "입력 ▷ ";
 			cin >> activeMeta_in;
 			cout << endl;
 
