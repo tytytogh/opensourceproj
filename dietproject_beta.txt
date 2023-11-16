@@ -165,6 +165,7 @@ double recoCal() {
 
 void printType() {
 	//종류 출력
+	cout << "<< 종류 >>" << endl << endl;
 	cout << "1 곡류" << endl;
 	cout << "2 면류" << endl;
 	cout << "3 떡류" << endl;
@@ -186,11 +187,12 @@ void printType() {
 	cout << "19 유제품" << endl;
 	cout << "20 유지류" << endl;
 	cout << "21 당류" << endl;
-	cout << "22 기타 입력되었던 음식" << endl;
+	cout << "22 기타 입력되었던 음식" << endl << endl;
 }
 
 void filemanage(int days, double Calcalculator) {
 	//양수 days가 들어옴
+
 
 	//식단에 음식을 추가할 방법
 	int way;
@@ -218,6 +220,7 @@ void filemanage(int days, double Calcalculator) {
 	int foodnum_in;
 	//해당 음식의 그램수 입력받을 변수
 	int gram;
+
 
 	//파일에서 음식 종류와 음식 칼로리를 foodtype, foodcal에 받아오기
 
@@ -272,14 +275,17 @@ void filemanage(int days, double Calcalculator) {
 		doubleCal[i] = stod(foodCal[i]);
 	}
 
+
+	int i = 0;
 	//사용자에게 음식타입과 칼로리를 종류별로 출력하고
 	//사용자가 하루(아침,점심,저녁)를 입력했다면, 입력한 내용을 파일에 씀
 	//다 짰다면 메뉴로 돌아가서 식단 보기에서 볼 수 있게 함   
 	//내부에서 foodnum_in이 0일 때만 i가 유지되며 다시 한번 더 돎
-	for (int i = 0; i < days;) {
+	while (i < days) {
 
+		int j = 0;
 		//하루마다 아침, 점심, 저녁으로 구별하여 입력받기 위한 for문
-		for (int j = 0; j < 3;) {
+		while (j < 3) {
 			if (j == 0) {	//j==0일 때 아침
 				cout << i + 1 << "일차 " << "아침" << endl;
 			}
@@ -291,6 +297,7 @@ void filemanage(int days, double Calcalculator) {
 			}
 			cout << "식단짜는 방법 선택(1과 2 중 선택) ▷ ";
 			cin >> way;
+			system("cls");
 			if (way == 1) {
 				//종류에서 선택
 
@@ -363,6 +370,10 @@ void filemanage(int days, double Calcalculator) {
 				//아침 string에 저장
 				//음식이름과 칼로리를 합쳐서 저장
 				breakfast = foodType[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]);
+
+				//아침을 이대로 계속 진행할 건지 결정
+				cout << "아침을 다음과 같이 짰습니다. 이대로 진행하시겠습니까?";
+				//그대로 진행할거면, j++ 아니면, continue
 			}
 			else if (j == 1) {
 				//점심 음식 선택
@@ -396,9 +407,13 @@ void filemanage(int days, double Calcalculator) {
 				//아침 string에 저장
 				//음식이름과 칼로리를 합쳐서 저장
 				lunch = foodType[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]);
+
+				//점심을 이대로 계속 진행할 건지 결정
+				cout << "점심을 다음과 같이 짰습니다. 이대로 진행하시겠습니까?";
+				//그대로 진행할거면, j++ 아니면, continue
 			}
 			else {
-				//아침 음식 선택
+				//저녁 음식 선택
 				cout << i + 1 << "일 저녁 식단에 입력할 음식 선택(*음식 맨 앞의 번호*, 뒤로가기는 0 입력)" << endl << endl;
 				cout << "입력 ▷ ";
 				//음식이 저장된 string배열의 인덱스 받기
@@ -429,14 +444,19 @@ void filemanage(int days, double Calcalculator) {
 				//아침 string에 저장
 				//음식이름과 칼로리를 합쳐서 저장
 				dinner = foodType[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]);
+
+				//저녁을 이대로 계속 진행할 건지 결정
+				cout << "저녁을 다음과 같이 짰습니다. 이대로 진행하시겠습니까?";
+				//그대로 진행할거면, j++ 아니면, continue
 			}
 
 			//***아침,점심,저녁을 각각 다 짜면, j가 증가하도록 if문 만들어야 함***
 
-
 			//만약, 저녁을 다 짜면, 하루에 짠 아침,점심,저녁과 하루 총칼로리 모두 출력 후
 			//이걸로 할건지 물어봄. 그리고 그렇다하면 i++
-
+			if (j == 3) {
+				cout << i + 1 << "일차 식단을 다음과 같이 저장하시려면 1, 다시 짜시려면 2를 입력해주세요" << endl;
+			}
 
 			//칼로리 필요량 추정치 출력
 			cout << "당신의 하루 총칼로리 필요량 추정치는 " << Calcalculator << "입니다" << endl;
