@@ -254,9 +254,9 @@ void filemanage(int days, double Calcalculator) {
 	infood.seekg(0, ios::beg);
 	//각 종류를 저장할 string 공간 할당
 	string* foodName = new string[count];
-	//각 음식이름의 길이 100bytes할당
+	//각 음식이름의 길이 150bytes할당
 	for (int i = 0; i < count; i++) {
-		foodName[i].resize(100);
+		foodName[i].resize(150);
 	}
 	//각 칼로리를 double형으로 변환해서 저장할 공간 할당
 	double* doubleCal = new double[count];
