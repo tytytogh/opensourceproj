@@ -205,6 +205,8 @@ void filemanage(int days, double Calcalculator) {
 	ifstream infood;
 	//저장된 음식별 그램당 칼로리 파일입력 스트림 관리 객체
 	ifstream incal;
+	//각 음식의 종류 번호를 저장한 바이너리 파일을 불러올 
+	ifstream type;
 	//직접 입력한 음식종류과 칼로리를 각 텍스트 파일에 저장하기 위한 객체
 	ofstream inhand;
 	//'\r' 개수 셀 변수
@@ -220,6 +222,8 @@ void filemanage(int days, double Calcalculator) {
 	int foodnum_in;
 	//해당 음식의 그램수 입력받을 변수
 	int gram;
+	//while문 내부에서 진행여부를 일시적으로 저장할 변수
+	char tmp = NULL;
 
 
 	//파일에서 음식 종류와 음식 칼로리를 foodtype, foodcal에 받아오기
@@ -227,8 +231,9 @@ void filemanage(int days, double Calcalculator) {
 	//파일 오픈(ifstream 디폴트인 iso::in 모드)
 	infood.open("foodtable.txt");
 	incal.open("caltable.txt");
+	type.open("type.txt");
 	//파일이 올바르지 않다면 종료
-	if (infood.fail() || incal.fail()) {
+	if (infood.fail() || incal.fail() || type.fail()) {
 		cout << "파일 오류입니다" << endl;
 		cout << "메뉴로 돌아갑니다" << endl;
 		system("pause");
@@ -237,16 +242,7 @@ void filemanage(int days, double Calcalculator) {
 
 	//파일에 있는 음식 종류의 개수 확인
 
-	//파일 포인터를 끝으로 옮김
-	infood.seekg(0, ios::end);
-	incal.seekg(0, ios::end);
-	//파일 크기 저장(파일의 각 줄의 끝에는 \r과 \n이 들어가있음)
-	int sizefood = infood.tellg();
-	int sizecal = incal.tellg();
-	//다시 파일 포인터 파일 맨 앞으로 옮김
-	infood.seekg(0, ios::beg);
-	incal.seekg(0, ios::beg);
-	//음식이름, 칼로리 텍스트 중 \r 개수 세기
+	//음식이름 텍스트 중 \r 개수 세기
 	//infood.eof()함수는 파일 끝에서 true이므로
 	//파일 끝이 아닐 때까지만 동작하게함
 	while (!infood.eof()) {
@@ -256,36 +252,42 @@ void filemanage(int days, double Calcalculator) {
 	}
 	//다시 파일 포인터 파일 맨 앞으로 옮김
 	infood.seekg(0, ios::beg);
-	incal.seekg(0, ios::beg);
 	//각 종류를 저장할 string 공간 할당
-	string* foodType = new string[count];
-	//각 칼로리 저장할 string 공간 할당
-	string* foodCal = new string[count];
+	string* foodName = new string[count];
+	//각 음식이름의 길이 100bytes할당
+	for (int i = 0; i < count; i++) {
+		foodName[i].resize(100);
+	}
 	//각 칼로리를 double형으로 변환해서 저장할 공간 할당
 	double* doubleCal = new double[count];
+	//음식 종류 번호를 저장할 공간
+	int* typein = new int[count];
 	//각 string에 텍스트 파일에서 데이터 읽어오기
 	for (int i = 0; i < count; i++) {
-		getline(infood, foodType[i]);
-	}
-	for (int i = 0; i < count; i++) {
-		getline(incal, foodCal[i]);
-	}
-	//string으로 된 칼로리를 double형으로
-	for (int i = 0; i < count; i++) {
-		doubleCal[i] = stod(foodCal[i]);
+		//스페이스 허용
+		getline(infood, foodName[i]);
+		//칼로리
+		incal >> doubleCal[i];
+		//종류 번호
+		type >> typein[i];
 	}
 
 
+	//외부 while문 돌릴 변수
 	int i = 0;
-	//사용자에게 음식타입과 칼로리를 종류별로 출력하고
-	//사용자가 하루(아침,점심,저녁)를 입력했다면, 입력한 내용을 파일에 씀
+	//사용자에게 음식이름과 칼로리를 종류별로 출력하고
+	//사용자가 하루(아침,점심,저녁)를 입력하고, 그대로 진행한다면, 입력한 내용을 파일에 씀
 	//다 짰다면 메뉴로 돌아가서 식단 보기에서 볼 수 있게 함   
 	//내부에서 foodnum_in이 0일 때만 i가 유지되며 다시 한번 더 돎
 	while (i < days) {
 
+		//내부 whlie문 돌릴 변수
 		int j = 0;
 		//하루마다 아침, 점심, 저녁으로 구별하여 입력받기 위한 for문
 		while (j < 3) {
+			//tmp 초기화
+			tmp = NULL;
+			//j로 아침,점심,저녁 구분
 			if (j == 0) {	//j==0일 때 아침
 				cout << i + 1 << "일차 " << "아침" << endl;
 			}
@@ -304,20 +306,19 @@ void filemanage(int days, double Calcalculator) {
 				//종류 출력
 				printType();
 				//종류 입력 요청
-				cout << "원하시는 종류 번호를 입력해주세요 ▷ ";
+				cout << "보길 원하시는 종류 번호를 입력해주세요 ▷ ";
 				cin >> type_in;
 
 				//화면 지우기
 				system("cls");
-				cout << "종류 " << type_in << "번" << endl;
+				cout << "종류 " << type_in << "번" << endl << endl;
 				//선택된 종류에 속한 음식 출력
 				for (int j = 0; j < count; j++) {
 					//종류에 속한 음식 찾아서 출력
 
-					//입력받은 type_in을 스트링으로 바꿔서 foodType 내에서 가장 먼저 나오는
-					//to_string(type_in)의 시작 위치가 0일 때, 다음 if문 실행
-					if (foodType[j].find(to_string(type_in)) == 0) { //*****문제 발생*****만약 음식종류가 1,2번인 경우, 10,11,12,13,...이 같이 출력됨
-						cout << j << "번 " << foodType[j] << ' ' << foodCal[j] << "kcal/g" << endl;
+					//입력받은 음식 종류와 저장된 종류번호 비교 후 출력
+					if (typein[j] == type_in) {
+						cout << j << "번 " << foodName[j] << ' ' << doubleCal[j] << "kcal/g" << endl;
 					}
 				}
 			}
@@ -332,6 +333,61 @@ void filemanage(int days, double Calcalculator) {
 				cin >> inhand_cal;
 				//*****입력받은 칼로리를 inhand_cal 파일에 저장해야함
 				//incal << inhand_cal;
+
+				if (j == 0) {
+					//아침을 이대로 계속 진행할 건지 결정
+					cout << "아침을 다음과 같이 짰습니다. 이대로 진행하시겠습니까?" << endl;
+					cout << "그대로 진행하시려면 엔터키(Enter) 입력, 아니면 스페이스 입력 ▷ ";
+					cin >> tmp;
+					if (tmp != '\n' && tmp != ' ') {
+						//tmp 예외
+						cout << "재입력 ▷ ";
+						cin >> tmp;
+					}
+					//그대로 진행할거면, j++ 아니면, continue
+					if (tmp == '\n') {
+						j++;
+					}
+					else if (tmp == ' ') {
+						continue;
+					}
+				}
+				else if (j == 1) {
+					//점심을 이대로 계속 진행할 건지 결정
+					cout << "점심을 다음과 같이 짰습니다. 이대로 진행하시겠습니까?";
+					cout << "그대로 진행하시려면 엔터키(Enter) 입력, 아니면 스페이스 입력 ▷ ";
+					cin >> tmp;
+					if (tmp != '\n' && tmp != ' ') {
+						//tmp 예외
+						cout << "재입력 ▷ ";
+						cin >> tmp;
+					}
+					//그대로 진행할거면, j++ 아니면, continue
+					if (tmp == '\n') {
+						j++;
+					}
+					else if (tmp == ' ') {
+						continue;
+					}
+				}
+				else {
+					//저녁을 이대로 계속 진행할 건지 결정
+					cout << "저녁을 다음과 같이 짰습니다. 이대로 진행하시겠습니까?";
+					cout << "그대로 진행하시려면 엔터키(Enter) 입력, 아니면 스페이스 입력 ▷ ";
+					cin >> tmp;
+					if (tmp != '\n' && tmp != ' ') {
+						//tmp 예외
+						cout << "재입력 ▷ ";
+						cin >> tmp;
+					}
+					//그대로 진행할거면, j++ 아니면, continue
+					if (tmp == '\n') {
+						j++;
+					}
+					else if (tmp == ' ') {
+						continue;
+					}
+				}
 			}
 
 			//way 예외(way가 1 또는 2가 아닐 때)
@@ -369,11 +425,24 @@ void filemanage(int days, double Calcalculator) {
 				}
 				//아침 string에 저장
 				//음식이름과 칼로리를 합쳐서 저장
-				breakfast = foodType[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]);
+				breakfast = foodName[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]);
 
 				//아침을 이대로 계속 진행할 건지 결정
 				cout << "아침을 다음과 같이 짰습니다. 이대로 진행하시겠습니까?";
+				cout << "그대로 진행하시려면 엔터키(Enter) 입력, 아니면 스페이스 입력 ▷ ";
+				cin >> tmp;
+				if (tmp != '\n' && tmp != ' ') {
+					//tmp 예외
+					cout << "재입력 ▷ ";
+					cin >> tmp;
+				}
 				//그대로 진행할거면, j++ 아니면, continue
+				if (tmp == '\n') {
+					j++;
+				}
+				else if (tmp == ' ') {
+					continue;
+				}
 			}
 			else if (j == 1) {
 				//점심 음식 선택
@@ -384,7 +453,7 @@ void filemanage(int days, double Calcalculator) {
 				//foodnum_in에 정상적인 입력이 들어옴
 				if (foodnum_in > 0 && foodnum_in < count) {
 					//점심 string에 저장
-					lunch = foodType[foodnum_in];
+					lunch = foodName[foodnum_in];
 					i++;
 				}
 				//foodnum_in에 잘못된 입력 들어옴
@@ -393,10 +462,11 @@ void filemanage(int days, double Calcalculator) {
 					continue;
 				}
 				//칼로리 그램수 입력
-				cout << "해당 음식의 드실 그램수(정수)를 입력해주세요" << endl << endl;
+				cout << "해당 음식의 드실 그램수[g](정수)를 입력해주세요" << endl << endl;
 				cout << "입력 ▷ ";
 				cin >> gram;
 				if (gram < 0) {
+					//예외
 					//gram이 0보다 작으면 다시 실행
 					cout << "잘못된 입력입니다" << endl;
 					cout << "다시 선택으로 돌아갑니다" << endl;
@@ -406,11 +476,24 @@ void filemanage(int days, double Calcalculator) {
 				}
 				//아침 string에 저장
 				//음식이름과 칼로리를 합쳐서 저장
-				lunch = foodType[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]);
+				lunch = foodName[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]);
 
 				//점심을 이대로 계속 진행할 건지 결정
 				cout << "점심을 다음과 같이 짰습니다. 이대로 진행하시겠습니까?";
+				cout << "그대로 진행하시려면 엔터키(Enter) 입력, 아니면 스페이스 입력 ▷ ";
+				cin >> tmp;
+				if (tmp != '\n' && tmp != ' ') {
+					//tmp 예외
+					cout << "재입력 ▷ ";
+					cin >> tmp;
+				}
 				//그대로 진행할거면, j++ 아니면, continue
+				if (tmp == '\n') {
+					j++;
+				}
+				else if (tmp == ' ') {
+					continue;
+				}
 			}
 			else {
 				//저녁 음식 선택
@@ -421,7 +504,7 @@ void filemanage(int days, double Calcalculator) {
 				//foodnum_in에 정상적인 입력이 들어옴
 				if (foodnum_in > 0 && foodnum_in < count) {
 					//저녁 string에 저장
-					dinner = foodType[foodnum_in];
+					dinner = foodName[foodnum_in];
 					i++;
 				}
 				//foodnum_in에 잘못된 입력 들어옴
@@ -443,11 +526,24 @@ void filemanage(int days, double Calcalculator) {
 				}
 				//아침 string에 저장
 				//음식이름과 칼로리를 합쳐서 저장
-				dinner = foodType[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]);
+				dinner = foodName[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]);
 
 				//저녁을 이대로 계속 진행할 건지 결정
 				cout << "저녁을 다음과 같이 짰습니다. 이대로 진행하시겠습니까?";
+				cout << "그대로 진행하시려면 엔터키(Enter) 입력, 아니면 스페이스 입력 ▷ ";
+				cin >> tmp;
+				if (tmp != '\n' && tmp != ' ') {
+					//tmp 예외
+					cout << "재입력 ▷ ";
+					cin >> tmp;
+				}
 				//그대로 진행할거면, j++ 아니면, continue
+				if (tmp == '\n') {
+					j++;
+				}
+				else if (tmp == ' ') {
+					continue;
+				}
 			}
 
 			//***아침,점심,저녁을 각각 다 짜면, j가 증가하도록 if문 만들어야 함***
@@ -455,24 +551,23 @@ void filemanage(int days, double Calcalculator) {
 			//만약, 저녁을 다 짜면, 하루에 짠 아침,점심,저녁과 하루 총칼로리 모두 출력 후
 			//이걸로 할건지 물어봄. 그리고 그렇다하면 i++
 			if (j == 3) {
-				cout << i + 1 << "일차 식단을 다음과 같이 저장하시려면 1, 다시 짜시려면 2를 입력해주세요" << endl;
+				cout << i + 1 << "일차 식단을 다음과 같이 저장하시려면 엔터키(Enter), 다시 짜시려면 2를 입력해주세요" << endl;
 			}
 
 			//칼로리 필요량 추정치 출력
 			cout << "당신의 하루 총칼로리 필요량 추정치는 " << Calcalculator << "입니다" << endl;
 		}
-
-		//메모리 반환
-		delete[]foodType;
-		delete[]foodCal;
-		delete[]doubleCal;
-
-		//파일 닫기
-		infood.close();
-		incal.close();
-
-		return;
 	}
+	//메모리 반환
+	delete[]foodName;
+	delete[]typein;
+	delete[]doubleCal;
+
+	//파일 닫기
+	infood.close();
+	incal.close();
+
+	return;
 }
 
 void dietplan(double Calcalculator) {  //식단 짜는 함수 
