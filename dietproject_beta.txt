@@ -349,7 +349,7 @@ void makeplan(int days, double Calcalculator) {
 
 				if (j == 0) {
 					//아침을 이대로 계속 진행할 건지 결정
-					cout << "아침을 다음과 같이 짰습니다. 이대로 진행하시겠습니까?" << endl;
+					cout << "아침을 다음과 같이 선택했습니다. 이대로 진행하시겠습니까?" << endl;
 					cout << "다음으로 넘어가시려면 엔터키(Enter) 입력, 추가하시려면 스페이스 입력 ▷ ";
 					cin >> tmp;
 					if (tmp != '\n' && tmp != ' ') {
@@ -359,6 +359,10 @@ void makeplan(int days, double Calcalculator) {
 					}
 					//그대로 진행할거면, j++ 아니면, continue
 					if (tmp == '\n') {
+						//아침 string에 저장
+						//음식이름과 칼로리를 합쳐서 저장
+						//음식개수에 상관없이 string 뒤에 계속 이어붙임
+						breakfast.append(to_string(days) + inhand_food + " " + to_string(inhand_cal));
 						j++;
 					}
 					else if (tmp == ' ') {
@@ -367,7 +371,7 @@ void makeplan(int days, double Calcalculator) {
 				}
 				else if (j == 1) {
 					//점심을 이대로 계속 진행할 건지 결정
-					cout << "점심을 다음과 같이 짰습니다. 이대로 진행하시겠습니까?";
+					cout << "점심을 다음과 같이 선택했습니다. 이대로 진행하시겠습니까?";
 					cout << "다음으로 넘어가시려면 엔터키(Enter) 입력, 추가하시려면 스페이스 입력 ▷ ";
 					cin >> tmp;
 					if (tmp != '\n' && tmp != ' ') {
@@ -377,6 +381,10 @@ void makeplan(int days, double Calcalculator) {
 					}
 					//그대로 진행할거면, j++ 아니면, continue
 					if (tmp == '\n') {
+						//점심 string에 저장
+						//음식이름과 칼로리를 합쳐서 저장
+						//음식개수에 상관없이 string 뒤에 계속 이어붙임
+						lunch.append(to_string(days) + inhand_food + " " + to_string(inhand_cal));
 						j++;
 					}
 					else if (tmp == ' ') {
@@ -385,7 +393,7 @@ void makeplan(int days, double Calcalculator) {
 				}
 				else {
 					//저녁을 이대로 계속 진행할 건지 결정
-					cout << "저녁을 다음과 같이 짰습니다. 이대로 진행하시겠습니까?";
+					cout << "저녁을 다음과 같이 선택했습니다. 이대로 진행하시겠습니까?";
 					cout << "다음으로 넘어가시려면 엔터키(Enter) 입력, 추가하시려면 스페이스 입력 ▷ ";
 					cin >> tmp;
 					if (tmp != '\n' && tmp != ' ') {
@@ -395,6 +403,10 @@ void makeplan(int days, double Calcalculator) {
 					}
 					//그대로 진행할거면, j++ 아니면, continue
 					if (tmp == '\n') {
+						//저녁 string에 저장
+						//음식이름과 칼로리를 합쳐서 저장
+						//음식개수에 상관없이 string 뒤에 계속 이어붙임
+						dinner.append(to_string(days) + inhand_food + " " + to_string(inhand_cal));
 						j++;
 					}
 					else if (tmp == ' ') {
@@ -442,10 +454,10 @@ void makeplan(int days, double Calcalculator) {
 				//아침 string에 저장
 				//음식이름과 칼로리를 합쳐서 저장
 				//음식개수에 상관없이 string 뒤에 계속 이어붙임
-				breakfast.append("0" + foodName[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]));
+				breakfast.append(to_string(days) + foodName[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]));
 
 				//아침을 이대로 계속 진행할 건지 결정
-				cout << "아침을 다음과 같이 짰습니다. 이대로 진행하시겠습니까?";
+				cout << "아침을 다음과 같이 선택했습니다. 이대로 진행하시겠습니까?";
 				cout << "다음으로 넘어가시려면 엔터키(Enter) 입력, 추가하시려면 스페이스 입력 ▷ ";
 				cin >> tmp;
 				if (tmp != '\n' && tmp != ' ') {
@@ -498,10 +510,10 @@ void makeplan(int days, double Calcalculator) {
 				//점심 string에 저장
 				//음식이름과 칼로리를 합쳐서 저장
 				//음식개수에 상관없이 string 뒤에 계속 이어붙임
-				lunch.append("1" + foodName[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]));
+				lunch.append(to_string(days) + foodName[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]));
 
 				//점심을 이대로 계속 진행할 건지 결정
-				cout << "점심을 다음과 같이 짰습니다. 이대로 진행하시겠습니까?";
+				cout << "점심을 다음과 같이 선택했습니다. 이대로 진행하시겠습니까?";
 				cout << "다음으로 넘어가시려면 엔터키(Enter) 입력, 추가하시려면 스페이스 입력 ▷ ";
 				cin >> tmp;
 				if (tmp != '\n' && tmp != ' ') {
@@ -554,10 +566,10 @@ void makeplan(int days, double Calcalculator) {
 				//저녁 string에 저장
 				//음식이름과 칼로리를 합쳐서 저장
 				//음식개수에 상관없이 string 뒤에 계속 이어붙임
-				dinner.append("2" + foodName[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]));
+				dinner.append(to_string(days) + foodName[foodnum_in] + " " + to_string(gram * doubleCal[foodnum_in]));
 
 				//저녁을 이대로 계속 진행할 건지 결정
-				cout << "저녁을 다음과 같이 짰습니다. 이대로 진행하시겠습니까?";
+				cout << "저녁을 다음과 같이 선택했습니다. 이대로 진행하시겠습니까?";
 				cout << "다음으로 넘어가시려면 엔터키(Enter) 입력, 추가하시려면 스페이스 입력 ▷ ";
 				cin >> tmp;
 				if (tmp != '\n' && tmp != ' ') {
@@ -584,7 +596,9 @@ void makeplan(int days, double Calcalculator) {
 			if (j == 3) {
 				cout << i + 1 << "일차 식단을 다음과 같이 저장하시려면 1, 다시 짜시려면 2를 입력해주세요" << endl;
 				//총칼로리 출력
-
+				for (int k = 0; k < days; k++) {
+					//각 아침,점심, 저녁마다 days 수가 시작되는 곳부터 다음 days수가 시작되기 전까지 출력해야함********
+				}
 				//입력
 				cout << "입력 ▷ ";
 				cin >> mem;
@@ -649,7 +663,11 @@ void sportCal_data() {
 }
 
 void checkDiet() {
-
+	//저장된 식단 가져올 객체
+	ifstream memory;
+	
+	//가져온 메모리 오픈(iso::in 모드)
+	memory.open("Diet.txt");
 }
 
 void menu(void) {
