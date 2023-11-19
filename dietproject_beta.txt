@@ -629,6 +629,9 @@ void makeplan(int days, double Calcalculator) {
 	//파일 닫기
 	infood.close();
 	incal.close();
+	type.close();
+	memory.close();
+	inhand.close();
 
 	return;
 }
