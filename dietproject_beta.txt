@@ -191,6 +191,82 @@ void printType() {
 	cout << "22 기타 입력되었던 음식" << endl << endl;
 }
 
+void inperson() {
+	cout << "음식 이름을 입력하세요(영어로만 가능) ▷ ";
+				//음식 이름 저장
+				cin >> inhand_food;
+				//inhand << inhand_food;
+				cout << "음식의 드신 양의 칼로리를 입력해주세요(단위: kcal) ▷ ";
+				cin >> inhand_cal;
+
+				if (j == 0) {
+					//아침을 이대로 계속 진행할 건지 결정
+					cout << "아침을 다음과 같이 선택했습니다. 이대로 진행하시겠습니까?" << endl;
+					cout << "다음으로 넘어가시려면 엔터키(Enter) 입력, 추가하시려면 스페이스 입력 ▷ ";
+					cin >> tmp;
+					if (tmp != '\n' && tmp != ' ') {
+						//tmp 예외
+						cout << "재입력 ▷ ";
+						cin >> tmp;
+					}
+					//그대로 진행할거면, j++ 아니면, continue
+					if (tmp == '\n') {
+						//아침 string에 저장
+						//음식이름과 칼로리를 합쳐서 저장
+						//음식개수에 상관없이 string 뒤에 계속 이어붙임
+						breakfast.append(to_string(days) + inhand_food + " " + to_string(inhand_cal));
+						j++;
+					}
+					else if (tmp == ' ') {
+						continue;
+					}
+				}
+				else if (j == 1) {
+					//점심을 이대로 계속 진행할 건지 결정
+					cout << "점심을 다음과 같이 선택했습니다. 이대로 진행하시겠습니까?";
+					cout << "다음으로 넘어가시려면 엔터키(Enter) 입력, 추가하시려면 스페이스 입력 ▷ ";
+					cin >> tmp;
+					if (tmp != '\n' && tmp != ' ') {
+						//tmp 예외
+						cout << "재입력 ▷ ";
+						cin >> tmp;
+					}
+					//그대로 진행할거면, j++ 아니면, continue
+					if (tmp == '\n') {
+						//점심 string에 저장
+						//음식이름과 칼로리를 합쳐서 저장
+						//음식개수에 상관없이 string 뒤에 계속 이어붙임
+						lunch.append(to_string(days) + inhand_food + " " + to_string(inhand_cal));
+						j++;
+					}
+					else if (tmp == ' ') {
+						continue;
+					}
+				}
+				else {
+					//저녁을 이대로 계속 진행할 건지 결정
+					cout << "저녁을 다음과 같이 선택했습니다. 이대로 진행하시겠습니까?";
+					cout << "다음으로 넘어가시려면 엔터키(Enter) 입력, 추가하시려면 스페이스 입력 ▷ ";
+					cin >> tmp;
+					if (tmp != '\n' && tmp != ' ') {
+						//tmp 예외
+						cout << "재입력 ▷ ";
+						cin >> tmp;
+					}
+					//그대로 진행할거면, j++ 아니면, continue
+					if (tmp == '\n') {
+						//저녁 string에 저장
+						//음식이름과 칼로리를 합쳐서 저장
+						//음식개수에 상관없이 string 뒤에 계속 이어붙임
+						dinner.append(to_string(days) + inhand_food + " " + to_string(inhand_cal));
+						j++;
+					}
+					else if (tmp == ' ') {
+						continue;
+					}
+				}
+}
+
 void makeplan(int days, double Calcalculator) {
 	//양수 days가 들어옴
 
@@ -217,10 +293,10 @@ void makeplan(int days, double Calcalculator) {
 	int count = 0;
 	//음식 종류 번호 입력받을 변수
 	int type_in;
-	//아침,점심,저녁을 입력받아서 임시로 저장할 string 객체
-	string breakfast;
-	string lunch;
-	string dinner;
+	//아침,점심,저녁을 입력받아서 임시로 저장할 string 객체 배열들
+	string breakfast[70];
+	string lunch[70];
+	string dinner[70];
 	//사용자가 선택한 음식의 인덱스를 저장할 변수
 	int foodnum_in;
 	//해당 음식의 그램수 입력받을 변수
@@ -474,6 +550,7 @@ void makeplan(int days, double Calcalculator) {
 					continue;
 				}
 			}
+
 			//점심인 경우
 			else if (j == 1) {
 				//점심 음식 선택
