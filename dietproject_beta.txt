@@ -1,7 +1,6 @@
 //다이어트 도우미
 //스크립트 설명
 
-//**********************************kindof함수에서 string 사이즈가 초과하는 문제 발생한 듯 한 번 살펴볼 필요가 있음
 
 #include <iostream>
 #include <fstream>
@@ -28,8 +27,12 @@ struct food {
 	string breakfast[70];
 	string lunch[70];
 	string dinner[70];
+	//선택한 하루 전체 칼로리 저장할 변수
+	double chooseCal;
 	//음식 이름, 칼로리 스트링의 배열 개수 
 	int count;
+	//아침,점심,저녁 별 식단을 추가한 개수를 담을 변수
+	int countb, countl, countd;
 	//음식 종류 번호 입력받을 변수
 	int foodtype_in;
 	//사용자가 선택한 음식의 인덱스를 저장할 변수
@@ -40,10 +43,6 @@ struct food {
 	int i;
 	//내부 whlie문 돌릴 변수
 	int j;
-	//아침,점심,저녁 별 식단을 추가한 개수를 담을 변수
-	int countb, countl, countd;
-	//선택한 하루 칼로리 저장할 변수
-	double chooseCal;
 };
 
 double tdee(person p, int activeMeta_in) {
@@ -246,15 +245,21 @@ void kindof(food& f) {
 	}
 
 
+	//아래 while문에서 문자를 받을 변수
+	char ch;
 	//음식이름 텍스트 중 \r 개수 세기
 	//infood.eof()함수는 파일 끝에서 true이므로
 	//파일 끝이 아닐 때까지만 동작하게함
 	while (!infood.eof()) {
-		//파일 포인터를 한칸씩 이동시키며 음식이름의 개수를 받음->음식 이름은 개행으로 구분되어 있음
-		infood.seekg(f.count++, ios::beg);
+		//파일 포인터를 한칸씩 이동시키며 1 바이트씩 문자를 받음->음식 이름은 개행으로 구분되어 있음
+		infood.get(ch);
+		if (ch == '\n') {
+			f.count++;
+		}
 	}
-	f.count--;
-	//다시 파일 포인터 파일 맨 앞으로 옮김
+	//마지막 줄이 안 읽히므로 1 추가해줘야함
+	f.count++;
+	//다시 파일 포인터 파일 맨 앞으로 옮김->foodName에 음식을 처음부터 끝까지 저장하기 위함
 	infood.seekg(0, ios::beg);
 	//각 종류를 저장할 string 공간 할당
 	string* foodName = new string[f.count];
@@ -316,7 +321,7 @@ void kindof(food& f) {
 		cin >> f.foodnum_in;
 		//foodnum_in에 잘못된 입력 들어옴
 		//또는 종류에서 다시 선택하려고 함(foodnum_in에 0입력됨)
-		if ( f.foodnum_in <= 0 && f.foodnum_in >= f.count) {
+		if (f.foodnum_in <= 0 && f.foodnum_in >= f.count) {
 			system("cls");
 			return;
 		}
@@ -340,7 +345,7 @@ void kindof(food& f) {
 		cout << foodName[f.foodnum_in] << endl << endl;
 		cout << "추가하시려면 g 입력, 다시 선택하시려면 p 입력, 다음으로 넘어가시려면 n 입력 ▷ ";
 		cin >> tmp;
-		if (tmp != 'g' && tmp != 'p' && tmp!='n') {
+		if (tmp != 'g' && tmp != 'p' && tmp != 'n') {
 			//tmp 예외
 			cout << "재입력 ▷ ";
 			cin >> tmp;
@@ -403,7 +408,7 @@ void kindof(food& f) {
 			cout << "재입력 ▷ ";
 			cin >> tmp;
 		}
-		
+
 		//g가 입력됐을 때는 그대로 아래 if~else if문 실행 필요없이 그대로 lunch에 선택한 것 저장 후 f.countl이 1 증가
 		if (tmp == 'p') {
 			system("cls");
@@ -460,7 +465,7 @@ void kindof(food& f) {
 			cout << "재입력 ▷ ";
 			cin >> tmp;
 		}
-		
+
 		//g가 입력됐을 때는 그대로 아래 if~else if문 실행 필요없이 그대로 dinner에 선택한 것 저장 후 f.countd이 1 증가
 		else if (tmp == 'p') {
 			system("cls");
@@ -479,8 +484,18 @@ void kindof(food& f) {
 		f.countd++;
 	}
 	//선택한 하루 전체 칼로리 담기
-	f.chooseCal += f.inhand_cal;
+	f.chooseCal += f.gram * doubleCal[f.foodnum_in];
 	system("cls");
+
+	//메모리 반환
+	delete[]foodName;
+	delete[]typein;
+	delete[]doubleCal;
+
+	//파일 닫기
+	infood.close();
+	incal.close();
+	type.close();
 }
 
 void inperson(food& f) {
@@ -602,7 +617,7 @@ void inperson(food& f) {
 
 		//저녁 string에 저장
 		//음식이름과 칼로리를 합쳐서 저장
-	    //음식개수에 상관없이 string 뒤에 계속 이어붙임
+		//음식개수에 상관없이 string 뒤에 계속 이어붙임
 		f.dinner[f.countd].append(to_string(f.i) + inhand_food + " " + to_string(inhand_cal));
 		//그대로 진행하면 f.countd 1 증가
 		f.countd++;
@@ -610,6 +625,9 @@ void inperson(food& f) {
 	//선택한 하루 전체 칼로리 담기
 	f.chooseCal += inhand_cal;
 	system("cls");
+
+	//파일 닫기
+	inhand.close();
 }
 
 int dietplan(double Calcalculator) {  //식단 짜는 함수 
@@ -643,39 +661,7 @@ int dietplan(double Calcalculator) {  //식단 짜는 함수
 		cout << "파일 오류입니다" << endl;
 		cout << "메뉴로 돌아갑니다" << endl;
 		system("pause");
-		return;
-	}
-
-	//파일에 있는 음식 종류의 개수 확인
-
-	//음식이름 텍스트 중 \r 개수 세기
-	//infood.eof()함수는 파일 끝에서 true이므로
-	//파일 끝이 아닐 때까지만 동작하게함
-	while (!infood.eof()) {
-		//파일 포인터를 한칸씩 이동시키며 음식이름의 개수를 받음->음식 이름은 개행으로 구분되어 있음
-		infood.seekg(f.count++, ios::beg);
-	}
-	f.count--;
-	//다시 파일 포인터 파일 맨 앞으로 옮김
-	infood.seekg(0, ios::beg);
-	//각 종류를 저장할 string 공간 할당
-	string* foodName = new string[f.count];
-	//각 음식이름의 길이 100bytes할당
-	for (int i = 0; i < f.count; i++) {
-		foodName[i].resize(100);
-	}
-	//각 칼로리를 double형으로 변환해서 저장할 공간 할당
-	double* doubleCal = new double[f.count];
-	//음식 종류 번호를 저장할 공간
-	int* typein = new int[f.count];
-	//각 string에 텍스트 파일에서 데이터 읽어오기
-	for (int i = 0; i < f.count; i++) {
-		//스페이스 허용
-		getline(infood, foodName[i]);
-		//칼로리
-		incal >> doubleCal[i];
-		//종류 번호
-		type >> typein[i];
+		return 0;
 	}
 
 
@@ -689,6 +675,13 @@ int dietplan(double Calcalculator) {  //식단 짜는 함수
 	cout << "뒤로가기(0 또는 음수 입력)" << endl;
 	cout << "식단을 짜려고 하는 일 수 ▷ ";
 	cin >> days;
+
+	if (days <= 0) {
+		//days가 0이하일 경우
+		cout << "1 이상 입력가능합니다 재입력해주세요" << endl;
+		cout << "식단을 짜려고 하는 일 수 ▷ ";
+		cin >> days;
+	}
 
 	if (days > 0) {
 		//외부 while문 돌릴 변수 초기화
@@ -739,7 +732,7 @@ int dietplan(double Calcalculator) {  //식단 짜는 함수
 
 
 				//각 날에 아,점,저 마다 way가 1이면 종류에서 선택, 2면 직접 입력
-				
+
 				//종류에서 선택
 				if (way == 1) {
 					//종류 출력
@@ -784,7 +777,7 @@ int dietplan(double Calcalculator) {  //식단 짜는 함수
 					}
 					//하루 선택한 칼로리와 필요 칼로리 비교
 					cout << "선택하신 음식들의 하루 칼로리는 " << f.chooseCal << "kcal고, 하루 필요 칼로리 추정치는 " << Calcalculator << "kcal입니다" << endl;
-					
+
 					for (int k = 0; k < days; k++) {
 						//각 아침,점심, 저녁마다 days 수가 시작되는 곳부터 다음 days수가 시작되기 전까지 출력해야함********
 					}
@@ -825,14 +818,8 @@ int dietplan(double Calcalculator) {  //식단 짜는 함수
 
 	}
 
-	//메모리 반환
-	delete[]foodName;
-	delete[]typein;
-	delete[]doubleCal;
-
 	//파일 닫기
 	memory.close();
-	inhand.close();
 
 	system("cls");
 
@@ -844,9 +831,17 @@ void sportCal_data() {
 }
 
 void checkDiet(int days = 0) { //days=0 디폴트 인자
+
+	//식단을 짜고 오지 않으면, 종료
+	if (days == 0) {
+		//먼저, 식단을 짜고 와야 함
+		system("pause");
+		return;
+	}
+
 	//저장된 식단 가져올 객체
 	ifstream memory;
-	
+
 	//가져온 메모리 오픈(iso::in 모드)
 	memory.open("Diet.txt");
 
@@ -859,7 +854,7 @@ void checkDiet(int days = 0) { //days=0 디폴트 인자
 	}
 
 	for (int i = 0; i < days; i++) {
-		cout << ;
+		cout << ' ';
 	}
 	cout << endl;
 
@@ -876,7 +871,7 @@ void menu(void) {
 	//메뉴 함수 종료 후 프로그램 종료하기 위한 변수
 	bool CorE = true;
 	//식단 짠 일 수 받을 변수
-	int days;
+	int days = 0;
 
 	//메뉴는 계속 돌면서 사용자가 그만하기를 원한다면, 종료됨
 	while (CorE) {
