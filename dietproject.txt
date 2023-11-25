@@ -1,4 +1,4 @@
-//다이어트 도우미
+///다이어트 도우미
 //스크립트 설명
 
 //**********************************kindof함수에서 string 사이즈가 초과하는 문제 발생한 듯 한 번 살펴볼 필요가 있음
@@ -634,16 +634,23 @@ int dietplan(double Calcalculator) {  //식단 짜는 함수
 
 	//파일에서 음식 종류와 음식 칼로리를 foodtype, foodcal에 받아오기
 
-	//파일 오픈(ifstream 디폴트인 iso::in 모드)
-	infood.open("foodtable.txt");
-	incal.open("caltable.txt");
-	type.open("type.txt");
+	//파일 오픈(ifstream 디폴트인 ios::in 모드)
+	infood.open("foodtable.txt",ios::in);
+	incal.open("caltable.txt",ios::in);
+	type.open("type.txt",ios::in);
 	//파일 오픈(ofstream 디폴트인 iso::out 모드)
+<<<<<<< HEAD
 	inhand.open("inperson.txt");
 	memory.open("Diet.txt");
 	memoryDay.open("DietDay.bin");
 	//모든 파일 중 하나라도 올바르지 않다면 종료
 	if (infood.fail() || incal.fail() || type.fail() || inhand.fail() || memory.fail() || memoryDay.fail()) {
+=======
+	memory.open("Diet.txt",ios::out);
+	inhand.open("inperson.txt",ios::out);
+	//파일이 올바르지 않다면 종료
+	if (infood.fail() || incal.fail() || type.fail() || memory.fail() || inhand.fail()) {
+>>>>>>> fa77c77f9877c9912d7db4ba7993e34244dee739
 		cout << "파일 오류입니다" << endl;
 		cout << "메뉴로 돌아갑니다" << endl;
 		system("pause");
@@ -658,17 +665,21 @@ int dietplan(double Calcalculator) {  //식단 짜는 함수
 	//infood.eof()함수는 파일 끝에서 true이므로
 	//파일 끝이 아닐 때까지만 동작하게함
 	while (!infood.eof()) {
-		//파일 포인터를 한칸씩 이동시키며 1 바이트씩 문자를 받음->음식 이름은 개행으로 구분되어 있음
-		infood.get(ch);
+		//get 포인터를 한 바이트씩 이동시키며 1 바이트씩 문자를 받음->음식 이름은 개행으로 구분되어 있음
+		ch = infood.get();
 		if (ch == '\n') {
 			f.count++;
 		}
 	}
 	//마지막 줄이 안 읽히므로 1 추가해줘야함
 	f.count++;
+<<<<<<< HEAD
 	//*****************************************************************파일 상태 클리어 -> 안하면 안되는 이유 필수
 	infood.clear();
 	//다시 파일 포인터 파일 맨 앞으로 옮김
+=======
+	//다시 get 포인터 파일 맨 앞으로 옮김
+>>>>>>> fa77c77f9877c9912d7db4ba7993e34244dee739
 	infood.seekg(0, ios::beg);
 	//각 종류를 저장할 string 공간 할당
 	string* foodName = new string[f.count];
@@ -680,14 +691,25 @@ int dietplan(double Calcalculator) {  //식단 짜는 함수
 	double* doubleCal = new double[f.count];
 	//음식 종류 번호를 저장할 공간
 	int* typein = new int[f.count];
+
+	//스트림이 정상적이지 않을 경우 실행됨
+	if (infood.bad()) {
+		cout << "스트림이 비정상 상태입니다" << endl;
+	}
+	int x = infood.tellg();                                               //문제 발생**********get 포인터를 파일 맨 앞으로 보냈는데 보내지지 않았음->해결 요함
+	cout << x << endl;
+
 	//각 string에 텍스트 파일에서 데이터 읽어오기
 	for (int i = 0; i < f.count; i++) {
 		//스페이스 허용
-		getline(infood, foodName[i]);
+		getline(infood, foodName[i], '\n');
 		//칼로리
 		incal >> doubleCal[i];
 		//종류 번호
 		type >> typein[i];
+	}
+	for (int i = 0; i < f.count; i++) {
+		foodName[i].shrink_to_fit();
 	}
 
 	//식단 짜기 설명 프린트
